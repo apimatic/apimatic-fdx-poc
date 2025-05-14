@@ -1,0 +1,13 @@
+toc:
+  - generate: Step by Step Tutorial
+    from: getting-started
+  - group: API Recipes
+    items:  
+      - page: Retrieve Transaction Details
+        file: api-recipes/transaction-history.md 
+      - page: Event Notification Guide
+        file: api-recipes/notification-guide.md   
+  - generate: API Endpoints
+    from: endpoints
+  - generate: Models
+    from: models

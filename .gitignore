@@ -1,0 +1,5 @@
+# Ignore all .zip files
+*.zip
+
+# Ignore all directories named api-portal
+api-portal/
