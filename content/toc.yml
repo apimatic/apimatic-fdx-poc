@@ -7,10 +7,6 @@ toc:
         file: user-experience/ux-guidelines-3 
       - page: Data Minimization Guidelines 1.0
         file: user-experience/data-minimization
-  - group: Security
-    items:  
-      - page: Retrieve Transaction Details
-        file: api-recipes/transaction-history.md 
   - group: API Recipes
     items:  
       - page: Retrieve Transaction Details
