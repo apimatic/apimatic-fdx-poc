@@ -4,7 +4,7 @@ toc:
   - group: User Experience
     items:  
       - page: UX Guidelines 3.0
-        file: content/md-content/ux-guidelines-3 
+        file: md-content/ux-guidelines-3 
   - group: Security
     items:  
       - page: Retrieve Transaction Details
