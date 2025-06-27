@@ -1,6 +1,14 @@
 toc:
   - generate: Step by Step Tutorial
     from: getting-started
+  - group: User Experience
+    items:  
+      - page: Retrieve Transaction Details
+        file: api-recipes/transaction-history.md 
+  - group: Security
+    items:  
+      - page: Retrieve Transaction Details
+        file: api-recipes/transaction-history.md 
   - group: API Recipes
     items:  
       - page: Retrieve Transaction Details
