@@ -28,14 +28,6 @@
       "enableAnalytics": true,
       "enableConsoleCalls": true,
       "useProxyForConsoleCalls": false,
-      "theme": {
-        "layout": {
-          "sidebar": {
-            "mode": "dropdown", 
-            "variation": "collapsed"
-          }
-        }
-      },
       "languageSettings": {
         "http_curl_v1": {
           "sdkDownloadLink": "",
@@ -134,6 +126,12 @@
               "fontWeight": "400",
               "fontStyle": "normal",
               "lineHeight": "1.75"
+            }
+          },
+          "layout": {
+            "sidebar": {
+              "mode": "dropdown",
+              "variation": "collapsed"
             }
           }
         }
