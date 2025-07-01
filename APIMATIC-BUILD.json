@@ -131,8 +131,8 @@
         },
         "layout": {
           "sidebar": {
-            "mode": "dropdown",
-            "variation": "basic"
+            "mode": "standard",
+            "variation": "collapsed"
           }
         }
       },
