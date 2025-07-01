@@ -132,7 +132,7 @@
         "layout": {
           "sidebar": {
             "mode": "dropdown",
-            "variation": "collapsed"
+            "variation": "basic"
           }
         }
       },
