@@ -4,7 +4,7 @@ toc:
   - group: User Experience
     items:  
       - page: UX Guidelines 3.0
-        file: user-experience/ux-guidelines-3 
+        file: user-experience/ux-guidelines
       - page: Data Minimization Guidelines 1.0
         file: user-experience/data-minimization
   - group: API Recipes
