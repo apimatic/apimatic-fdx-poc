@@ -127,12 +127,12 @@
               "fontStyle": "normal",
               "lineHeight": "1.75"
             }
-          },
-          "layout": {
-            "sidebar": {
-              "mode": "dropdown",
-              "variation": "collapsed"
-            }
+          }
+        },
+        "layout": {
+          "sidebar": {
+            "mode": "dropdown",
+            "variation": "collapsed"
           }
         }
       },
