@@ -7,12 +7,16 @@ toc:
         file: user-experience/ux-guidelines
       - page: Data Minimization Guidelines 1.0
         file: user-experience/data-minimization
-  - group: API Recipes
-    items:  
-      - page: Retrieve Transaction Details
-        file: api-recipes/transaction-history.md 
-      - page: Event Notification Guide
-        file: api-recipes/notification-guide.md   
+  - group: Develop
+    items:
+      - page: Get API Keys & Access Token
+        file: develop/get-api-keys-and-access-token
+      - group: API Recipes
+        items:
+          - page: Retrieve Transaction Details
+            file: api-recipes/notification-guide
+          - page: Event Notification Guide
+            file: api-recipes/notification-guide 
   - generate: API Endpoints
     from: endpoints
   - generate: Models
