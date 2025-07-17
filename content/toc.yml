@@ -14,9 +14,9 @@ toc:
       - group: API Recipes
         items:
           - page: Retrieve Transaction Details
-            file: api-recipes/notification-guide
+            file: develop/api-recipes/notification-guide
           - page: Event Notification Guide
-            file: api-recipes/notification-guide 
+            file: develop/api-recipes/notification-guide 
   - generate: API Endpoints
     from: endpoints
   - generate: Models
