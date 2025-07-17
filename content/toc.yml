@@ -14,7 +14,7 @@ toc:
       - group: API Recipes
         items:
           - page: Retrieve Transaction Details
-            file: develop/api-recipes/notification-guide
+            file: develop/api-recipes/transaction-history
           - page: Event Notification Guide
             file: develop/api-recipes/notification-guide 
   - generate: API Endpoints
