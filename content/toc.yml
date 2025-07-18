@@ -1,23 +1,39 @@
 toc:
-  - generate: Step by Step Tutorial
-    from: getting-started
+  - page: Quick Start
+    file: get-api-keys-and-access-token
   - group: User Experience
     items:  
       - page: UX Guidelines 3.0
         file: user-experience/ux-guidelines
       - page: Data Minimization Guidelines 1.0
         file: user-experience/data-minimization
-  - group: Develop
+  - group: Security
     items:
-      - page: Get API Keys & Access Token
-        file: develop/get-api-keys-and-access-token
-      - group: API Recipes
-        items:
-          - page: Retrieve Transaction Details
-            file: develop/api-recipes/transaction-history
-          - page: Event Notification Guide
-            file: develop/api-recipes/notification-guide 
-  - generate: API Endpoints
-    from: endpoints
-  - generate: Models
-    from: models
+      - page: UX Guidelines 3.0
+        file: user-experience/ux-guidelines
+      - page: Data Minimization Guidelines 1.0
+        file: user-experience/data-minimization
+  - group: API Reference
+    items:
+      - generate: API Endpoints
+        from: endpoints
+      - generate: Models
+        from: models
+  - group: Tax Reference
+    items:  
+      - page: UX Guidelines 3.0
+        file: user-experience/ux-guidelines
+      - page: Data Minimization Guidelines 1.0
+        file: user-experience/data-minimization
+  - group: Changelog
+    items:  
+      - page: UX Guidelines 3.0
+        file: user-experience/ux-guidelines
+      - page: Data Minimization Guidelines 1.0
+        file: user-experience/data-minimization
+  - group: FAQs
+    items:  
+      - page: UX Guidelines 3.0
+        file: user-experience/ux-guidelines
+      - page: Data Minimization Guidelines 1.0
+        file: user-experience/data-minimization
