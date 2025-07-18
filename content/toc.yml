@@ -19,21 +19,3 @@ toc:
         from: endpoints
       - generate: Models
         from: models
-  - group: Tax Reference
-    items:  
-      - page: UX Guidelines 3.0
-        file: user-experience/ux-guidelines
-      - page: Data Minimization Guidelines 1.0
-        file: user-experience/data-minimization
-  - group: Changelog
-    items:  
-      - page: UX Guidelines 3.0
-        file: user-experience/ux-guidelines
-      - page: Data Minimization Guidelines 1.0
-        file: user-experience/data-minimization
-  - group: FAQs
-    items:  
-      - page: UX Guidelines 3.0
-        file: user-experience/ux-guidelines
-      - page: Data Minimization Guidelines 1.0
-        file: user-experience/data-minimization
