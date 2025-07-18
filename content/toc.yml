@@ -1,6 +1,6 @@
 toc:
   - page: Quick Start
-    file: get-api-keys-and-access-token
+    file: quick-start
   - group: User Experience
     items:  
       - page: UX Guidelines 3.0
