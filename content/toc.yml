@@ -9,10 +9,8 @@ toc:
         file: user-experience/data-minimization
   - group: Security
     items:
-      - page: UX Guidelines 3.0
-        file: user-experience/ux-guidelines
-      - page: Data Minimization Guidelines 1.0
-        file: user-experience/data-minimization
+      - page: FDX API Security Model v4.1
+        file: security/security-model-v4.1
   - group: API Reference
     items:
       - generate: API Endpoints
