@@ -1,6 +1,6 @@
 toc:
   - page: Quick Start
-    file: quick-start
+    file: quickstart
   - group: User Experience
     items:  
       - page: UX Guidelines v2.2
