@@ -16,7 +16,7 @@ toc:
       - page: FDX Recipient Registration Guidelines
         file: security/recipient-registration-guidelines
       - page: FDX Recipient Registration with Delegation to Ecosystem Registry Guidelines
-        file: security/recipient-registration-guidelines-with-delegation-to-ecosystem-registry-guidelines
+        file: security/recipient-registration-with-delegation-to-ecosystem-registry-guidelines
   - group: API Reference
     items:
       - generate: API Endpoints
