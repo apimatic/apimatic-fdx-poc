@@ -1,6 +1,10 @@
 toc:
-  - page: Quick Start
-    file: quickstart
+  - group: Quickstart
+    items:
+      - page: Overview
+        file: quickstart/overview
+      - page: (Self-service) Get an Access Token
+        file: quickstart/get-access-token
   - group: User Experience
     items:  
       - page: UX Guidelines v2.2
