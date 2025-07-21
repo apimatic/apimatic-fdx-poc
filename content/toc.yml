@@ -23,3 +23,5 @@ toc:
         from: endpoints
       - generate: Models
         from: models
+  - page: Changelog
+    file: changelog
