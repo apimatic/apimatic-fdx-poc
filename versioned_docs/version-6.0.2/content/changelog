@@ -1,0 +1,17 @@
+## API Change Log / Release Notes
+| Version | Date            | Originator/ Contributor               | Reason for Change                                                                                    | Ratified  |
+|---------|-----------------|---------------------------------------|------------------------------------------------------------------------------------------------------|-----------|
+|  6.2    | September 2024  | Katie Volz                            | RFC 0259 - Prepaid Account Types                                                                     |  Yes      |
+|         |                 | Clyde Cutting Doug Hall David Biesack | RFC 0319 - Include Digital Wallet Data Types in Account/Transaction Schemas                          |           |
+|         |                 | Clyde Cutting Francesca Loiodice      | RFC 0314 - Errata to update Zimbabwe Currency Code (ZWL to ZWG) and non-material description updates |
+
+RFC 0259 - Prepaid Account Types
+RFC 0319 - Include Digital Wallet Data Types in Account/Transaction Schemas
+RFC 0314 - Errata to update Zimbabwe Currency Code (ZWL to ZWG) and non-material description updates
+
+## Document Change Log
+| Document              | Version | Notes                                                               | Date           |
+|-----------------------|---------|---------------------------------------------------------------------|----------------|
+| FDX Security Model    | 4.1     | Includes RFC 0237 FDX API Security Profile 1.0                      | September 2024 |
+| FDX API Specification | 6.2     | Specifies revocation endpoints and notice of revocation sample code | September 2024 | 
+RFC 0237 - FDX API Security Profile 1.0                                       

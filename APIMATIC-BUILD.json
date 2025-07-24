@@ -1,0 +1,18 @@
+{
+  "$schema": "https://titan.apimatic.io/api/build/schema",
+  "buildFileVersion": "1",
+  "generateVersionedPortal": {
+    "versionsPath": "./versioned_docs",
+    "useHostedPortalScript": true,
+    "versions": [
+      {
+        "label": "6.0.0",
+        "version": "6.0.0"
+      },
+      {
+        "label": "6.0.2",
+        "version": "6.0.2"
+      }
+    ]
+  }
+}

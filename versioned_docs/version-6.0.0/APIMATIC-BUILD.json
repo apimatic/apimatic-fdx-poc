@@ -1,0 +1,164 @@
+{
+  "$schema": "https://titan.apimatic.io/api/build/schema",
+  "buildFileVersion": "1",
+  "generatePortal": {
+    "contentFolder": "./",
+    "apiSpecPath": "./spec",
+    "apiSpecs": [],
+    "apiMergeSettings": {
+      "type": "Full"
+    },
+    "languageConfig": {
+      "http": {},
+      "csharp": {},
+      "java": {},
+      "php": {},
+      "python": {},
+      "ruby": {},
+      "typescript": {},
+      "go": {}
+    },
+    "portalSettings": {
+      "container": "apimatic-widget",
+      "portalStyle": "default",
+      "apiKey": "xxx",
+      "baseUrl": "./",
+      "enableExport": true,
+      "enableAnalytics": true,
+      "enableConsoleCalls": true,
+      "useProxyForConsoleCalls": false,
+      "languageSettings": {
+        "http_curl_v1": {
+          "sdkDownloadLink": "",
+          "disableSdkDownload": false
+        },
+        "cs_net_standard_lib": {
+          "sdkDownloadLink": "",
+          "disableSdkDownload": false
+        },
+        "java_eclipse_jre_lib": {
+          "sdkDownloadLink": "",
+          "disableSdkDownload": false
+        },
+        "php_generic_lib_v2": {
+          "sdkDownloadLink": "",
+          "disableSdkDownload": false
+        },
+        "python_generic_lib": {
+          "sdkDownloadLink": "",
+          "disableSdkDownload": false
+        },
+        "ruby_generic_lib": {
+          "sdkDownloadLink": "",
+          "disableSdkDownload": false
+        },
+        "ts_generic_lib": {
+          "sdkDownloadLink": "",
+          "disableSdkDownload": false
+        },
+        "go_generic_lib": {
+          "sdkDownloadLink": "",
+          "disableSdkDownload": false
+        }
+      },
+      "allowedExportFormats": [
+        "postman10",
+        "postman20",
+        "openapi31json",
+        "openapi31yaml",
+        "openapi3json",
+        "openapi3yaml",
+        "swagger20",
+        "swaggeryaml",
+        "swagger10",
+        "raml",
+        "raml10",
+        "apiblueprint",
+        "wadl2009",
+        "apimatic",
+        "wsdl",
+        "insomnia",
+        "insomniayaml"
+      ],
+      "theme": {
+        "colors": {
+          "primaryColor": {
+            "light": "#009687",
+            "dark": "#009687"
+          },
+          "linkColor": {
+            "light": "#367A69",
+            "dark": "#367A69"
+          }
+        },
+        "colorMode": {
+          "defaultMode": "system",
+          "disableSwitch": false
+        },
+        "fontSource": ["https://fonts.googleapis.com/css?family=Open+Sans"],
+        "cssStyles": {
+          "headings": {
+            "fontFamily": "Rubik, sans-serif",
+            "h1": {
+              "fontFamily": "Rubik, sans-serif",
+              "fontSize": "27px",
+              "fontWeight": "500",
+              "fontStyle": "normal",
+              "lineHeight": "1.3"
+            }
+          },
+          "body": {
+            "fontFamily": "Rubik, sans-serif",
+            "text1": {
+              "fontFamily": "Rubik, sans-serif",
+              "fontSize": "15px",
+              "fontWeight": "400",
+              "fontStyle": "normal",
+              "lineHeight": "1.75"
+            }
+          },
+          "code": {
+            "fontFamily": "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier",
+            "blockCode": {
+              "fontFamily": "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier",
+              "fontSize": "15px",
+              "fontWeight": "400",
+              "fontStyle": "normal",
+              "lineHeight": "1.75"
+            }
+          }
+        },
+        "layout": {
+          "sidebar": {
+            "mode": "standard",
+            "variation": "collapsed"
+          }
+        }
+      },
+      "codegenApiRoutes": {
+        "docsgen": "/static/docs/{template}.json",
+        "codegen": "/static/sdks/{template}.zip",
+        "transform": "/static/exports/{format}.{ext}"
+      },
+      "renameHttpToRest": false
+    },
+    "pageTitle": "FDX 6.2",
+    "navTitle": "Financial Data Exchange",
+    "logoUrl": "/static/images/logo.png",
+    "logoUrlDark": "/static/images/logo-dark.png",
+    "faviconUrl": "/static/images/favicon.png",
+    "whiteLabel": false,
+    "useHostedPortalScript": true,
+    "debug": {
+      "publishReport": false,
+      "dumpImportedApi": false,
+      "reportPath": "./apimatic-debug/apimatic-report.html",
+      "importedApiDumpPath": "./apimatic-debug/imported-api-dump.json"
+    }
+  },
+  "apiCopilotConfig": {
+    "key": "5fcfe725-7886-49b4-b9c9-d51757f57f53",
+    "welcomeMessage": "Welcome to the FDX Developer Portal!\n\nExplore the following prompts and harness the power of the FDX API with API Copilot\u0027s assistance!\n\n - \u0060Can you show me all the bank accounts linked to my profile?\u0060 \n - \u0060I want to see details for one of my accounts. How do I do that?\u0060 \n - \u0060How do I check recent transactions for my bank account?\u0060 \n - \u0060Can I view a specific transaction and its full details?\u0060 \n - \u0060What personal or party info is associated with my account?\u0060",
+    "isEnabled": true
+  }
+}

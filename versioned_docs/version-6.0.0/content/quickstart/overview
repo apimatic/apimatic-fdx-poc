@@ -1,0 +1,23 @@
+# 🚀 Welcome to the FDX API v6.0 Quickstart
+
+
+## 🧪 Try It Out: API Explorer
+
+To explore the API:
+
+1. Open the [FDX API Reference](https://developer.financialdataexchange.org/reference)
+2. Choose **v6.2** from the version selector
+3. Follow the [Access Token Guide](#🔐-how-to-generate-an-fdx-api-access-token-first-time-setup)
+4. Paste your token into the "Authorize" modal in the API Explorer
+5. Test real request/response pairs against our reference implementation
+
+---
+
+## 👉 Get Your Access Token
+
+Follow our step-by-step guide:  
+[🔐 How to Generate an FDX API Access Token (First-Time Setup)](#🔐-how-to-generate-an-fdx-api-access-token-first-time-setup)
+
+---
+
+Need help? Join the [FDX Community](https://fdx.atlassian.net) or email us at [fdxsupport@financialdataexchange.org](mailto:fdxsupport@financialdataexchange.org).

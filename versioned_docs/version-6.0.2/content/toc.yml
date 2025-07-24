@@ -1,0 +1,31 @@
+toc:
+  - group: Quickstart
+    items:
+      - page: Overview
+        file: quickstart/overview
+      - page: (Self-service) Get an Access Token
+        file: quickstart/get-access-token
+  - group: User Experience
+    items:  
+      - page: UX Guidelines v2.2
+        file: user-experience/ux-guidelines-v2.2
+      - page: Data Minimization Guidelines v1.0
+        file: user-experience/data-minimization
+  - group: Security
+    items:
+      - page: FDX API Security Model v4.1
+        file: security/security-model-v4.1
+      - page: FDX Control Considerations v4.0
+        file: security/control-considerations-v4.0
+      - page: FDX Recipient Registration Guidelines
+        file: security/recipient-registration-guidelines
+      - page: FDX Recipient Registration with Delegation to Ecosystem Registry Guidelines
+        file: security/recipient-registration-with-delegation-to-ecosystem-registry-guidelines
+  - group: API Reference
+    items:
+      - generate: API Endpoints
+        from: endpoints
+      - generate: Models
+        from: models
+  - page: Changelog
+    file: changelog
