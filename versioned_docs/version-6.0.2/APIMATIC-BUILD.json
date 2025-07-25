@@ -156,10 +156,5 @@
       "reportPath": "./apimatic-debug/apimatic-report.html",
       "importedApiDumpPath": "./apimatic-debug/imported-api-dump.json"
     }
-  },
-  "apiCopilotConfig": {
-    "key": "5fcfe725-7886-49b4-b9c9-d51757f57f53",
-    "welcomeMessage": "Welcome to the FDX Developer Portal!\n\nExplore the following prompts and harness the power of the FDX API with API Copilot\u0027s assistance!\n\n - \u0060Can you show me all the bank accounts linked to my profile?\u0060 \n - \u0060I want to see details for one of my accounts. How do I do that?\u0060 \n - \u0060How do I check recent transactions for my bank account?\u0060 \n - \u0060Can I view a specific transaction and its full details?\u0060 \n - \u0060What personal or party info is associated with my account?\u0060",
-    "isEnabled": true
   }
 }
