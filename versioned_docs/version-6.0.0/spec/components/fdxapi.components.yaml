@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  version: '6.2.0'
-  title: FDX V6.2.0 Shared Components API
-  description: Financial Data Exchange V6.2.0 Shared Components API
+  version: '6.0.0'
+  title: FDX V6.0.0 Shared Components API
+  description: Financial Data Exchange V6.0.0 Shared Components API
   contact:
     name: Financial Data Exchange
     url: 'https://financialdataexchange.org/'
@@ -12,7 +12,7 @@ info:
     url: 'https://financialdataexchange.org/common/Uploaded%20files/Policies/FDX%20API%20License%20Agreement-(11-13-2019).pdf'
 servers:
   - url: 'https://api.fi.com/fdx/v6'
-    description: Financial Data Exchange V6 Shared Components API
+    description: Financial Data Exchange V6.0.0 Shared Components API
 
 # paths: {}
 
@@ -31,20 +31,19 @@ components:
         This authorization protocol uses FAPI Security Profile 1.0 Part One — Baseline.
         To be used with the following FDX API domains: Event - Notification Subscription, Meta,
         Data Recipient Registration, Tax (the two update endpoints), and FDX Participant Registry.
+
         Client must comply with
         [6.2.2 Client provisions](https://openid.net/specs/openid-financial-api-part-1-1_0.html#client-provisions).
         Authorization server must comply with the
         [5.2.2 Authorization server](https://openid.net/specs/openid-financial-api-part-1-1_0.html#authorization-server).
+
         Client, authorization server and resource server requirements described in full by:
           * [FAPI Security Profile 1.0 Part One — Baseline](https://openid.net/specs/openid-financial-api-part-1-1_0.html)
           * FDX API Security Model specification published with the FDX API
       flows:
         clientCredentials:
           tokenUrl: 'https://auth.fi.com/fdx/v6/token'
-          scopes:
-            fdx:notifications:publish: Scope authorizing publishing of a new notification
-            fdx:notifications:subscribe: Scope authorizing creation of a new notification subscription
-            offline_access: Scope authorizing the client to refresh `access_tokens` without user present
+          scopes: {}
 
     OAuthFapi1Advanced:
       type: oauth2
@@ -72,25 +71,14 @@ components:
           scopes:
             fdx:accountbasic:read: Scope authorizing retrieval of account display name, masked account number, type, description
             fdx:accountdetailed:read: Scope authorizing retrieval of account information. Includes data from "Basic" + account balances, credit limits, due dates, interest rates, rewards balances, recurrences
-            fdx:accountpayments:read: Deprecated and replaced with `fdx:paymentsupport:read` in FDX release V6.1.0, `fdx:accountpayments:read` will be removed with V7 release
-            fdx:bills:read: Scope authorizing retrieval of bill payments data
+            fdx:accountpayments:read: Scope authorizing retrieval of full account number and payment network routing number
             fdx:customercontact:read: Scope authorizing retrieval of name, email, address, phone on file with this institution. Applies to both user and other account holders
             fdx:customerpersonal:read: Scope authorizing retrieval of name, email, address, phone, DoB, tax ID, SSN on file with this institution
-            fdx:images:read: Scope authorizing retrieval of check and receipt images, which may include PII such as name, full account and routing number
             fdx:investments:read: Scope authorizing retrieval of details about individual underlying investment positions
-            fdx:paymentsupport:read: Scope authorizing retrieval of full account number and payment network routing number
-            fdx:rewards:read: Scope authorizing retrieval of loyalty rewards programs, transactions and balances
-            fdx:statements:read: Scope authorizing retrieval of periodic PDF statement showing personal information, account and transaction details. May contain PII such as name, address
-            fdx:tax:read: Scope authorizing retrieval of information reporting tax forms and data, including any PII such as name, address, tax ID and account number
             fdx:transactions:read: Scope authorizing retrieval of historical and current transactions, transaction types, amounts, dates and descriptions
+            fdx:statements:read: Scope authorizing retrieval of periodic PDF statement showing personal information, account and transaction details. May contain PII such as name, address
             offline_access: Scope authorizing the client to refresh `access_tokens` without user present
             openid: Scope authorizing access to the user's identity details
-
-    bearerAuth:
-      description: The `access_token` should be used as the bearer token in this call.
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
 
   parameters:
     ############################################################
@@ -128,9 +116,12 @@ components:
     FapiInteractionIdHeader:
       name: x-fapi-interaction-id
       in: header
-      description: Unique identifier for this interaction
+      description: >-
+        Unique identifier for this interaction as an
+        [IETF RFC 4122](https://datatracker.ietf.org/doc/html/rfc4122) UUID.
+        Used across all FDX API requests and responses
       schema:
-        $ref: '#/components/schemas/FapiInteractionId'
+        type: string
       required: true
       example: c770aef3-6784-41f7-8e0e-ff5f97bddb3a
 
@@ -141,20 +132,13 @@ components:
       schema:
         $ref: '#/components/schemas/ActorType'
       example: BATCH
-      # Code generation using openapi-generator v3.3.4 as of 9-27-2023 fails on the $ref here,
-      # switch to this inline re-definition of ActorType enumeration for #CODEGEN to work:
-      # type: string
-      # enum:
-      #   - BATCH
-      #   - USER
 
     LimitQuery:
       name: limit
       in: query
       description: >-
         Number of elements that the consumer wishes to receive.
-        Providers should implement reasonable default/maximum/minimum values
-        based on their internal architecture and update their documentation accordingly
+        Providers should implement reasonable default and maximum values
       schema:
         type: integer
 
@@ -195,8 +179,8 @@ components:
     x-fapi-interaction-id:
       description: Unique identifier for this interaction
       schema:
-        $ref: '#/components/schemas/FapiInteractionId'
-      example: c770aef3-6784-41f7-8e0e-ff5f97bddb3a
+        type: string
+      example: rrt-970585410023330903-b-gce-821-23397-1
 
   schemas:
     ############################################################
@@ -385,15 +369,14 @@ components:
       description: >-
         An error entity which can be used at the API level for error responses
         or at the account level to indicate a problem specific to a particular
-        account. See the error codes and descriptions defined in the latest
-        FDX API Specification document, section 6.2 Errors
+        account
       type: object
       properties:
         code:
           type: string
           description: >-
-            Error code defined by FDX API Specification or Data Provider
-            indicating the error situation which has occurred
+            Long term persistent identifier which can be used to trace error
+            condition back to log information
         message:
           type: string
           description: >-
@@ -407,17 +390,6 @@ components:
             Can change at any time and should only be used for consumer
             to communicate with the data provider about an issue.
             Provider can include an error GUID in message for their use.
-
-    FapiInteractionId:
-      title: FAPI Interaction ID
-      description: >-
-        Universally unique identifier for this interaction,
-        used across all FDX API requests and responses
-      type: string
-      format: uuid
-      minLength: 36
-      maxLength: 36
-      example: c770aef3-6784-41f7-8e0e-ff5f97bddb3a
 
     FiAttribute:
       title: FI Attribute entity
@@ -495,10 +467,9 @@ components:
 
     Intermediary:
       title: Intermediary
-      description: Data Access Platform, Service Provider, or any other entity in the data
-        sharing chain between a Data Provider to a Data Recipient.
-        Properties in this structure use 'snake_case' names to match
-        the properties in [IETF RFC 7591](https://datatracker.ietf.org/doc/rfc7591/)
+      description: Data Access Platform, Service Provider, or any other entity in
+                   the data sharing chain between a Data Provider to a Data Recipient.
+                   In snake case to match IETF RFC 7591 naming formats
       type: object
       properties:
         name:
@@ -699,8 +670,7 @@ components:
       title: Recipient Request
       type: object
       description: Used to request a recipient registration.
-        Properties in this structure use 'snake_case' names to match
-        the properties in [IETF RFC 7591](https://datatracker.ietf.org/doc/rfc7591/)
+                   In snake case to match IETF RFC 7591 naming formats
       properties:
         client_name:
           $ref: '#/components/schemas/Identifier'
@@ -761,9 +731,7 @@ components:
     RegistryReference:
       title: Registry Reference
       type: object
-      description: Used for registry references.
-        Properties in this structure use 'snake_case' names to match
-        the properties in [IETF RFC 7591](https://datatracker.ietf.org/doc/rfc7591/)
+      description: Used for registry references. In snake case to match IETF RFC 7591 naming formats
       properties:
         registered_entity_name:
           type: string
@@ -857,31 +825,30 @@ components:
           | CHECKING | A deposit account held at a financial institution that allows withdrawals and deposits |
           | COMMERCIALDEPOSIT | Deposit Account for Commercial Customers e.g. Business Trust Account |
           | COMMERCIALINVESTMENT | Investment Account for Commercial Customers. e.g. Commercial Brokerage Account |
-          | COMMERCIALLINEOFCREDIT | A preset borrowing limit that can be used at any time |
+          | COMMERCIALINEOFCREDIT | A preset borrowing limit that can be used at any time |
           | COMMERCIALLOAN | A preset borrowing limit that can be used at any time |
           | COVERDELL | A trust or custodial account set up in the United States solely for paying qualified education expenses for the designated beneficiary of the account |
           | CREDITCARD | Allows cardholders to borrow funds with which to pay for goods and services with merchants that accept cards for payment |
-          | DEFERREDPROFITSHARINGPLAN | A deferred profit sharing plan (DPSP) is an employer-sponsored profit sharing plan that is registered with a government agency (such as the Canada Revenue Agency) |
+          | DEFERREDPROFITSHARINGPLAN | A deferred profit sharing plan (DPSP) is an employer-sponsored profit sharing plan that is registered with a government agency (such as the Canada Revenue Agency). |
           | DEFINEDBENEFIT | An employer-sponsored retirement plan where employee benefits are computed using a formula that considers several factors, such as length of employment and salary history |
-          | DIGITALASSET | Encompasses cryptocurrencies as well as other digital assets such as NFTs |
-          | DIGITALWALLET | A digital wallet account enables digital financial transactions through a deposit value and one or more linked funding instruments |
+          | DIGITALASSET | Encompasses cryptocurrencies as well as other digital assets such as NFTs. |
           | ESCROW | A contractual arrangement in which a third party (the stakeholder or escrow agent) receives and disburses money or property for the primary transacting parties, with the disbursement dependent on conditions agreed to by the transacting parties |
           | ESOP | An employee stock ownership plan (ESOP) is an employee benefit plan that gives workers ownership interest in the company |
           | FIXEDANNUITY | A type of insurance contract that promises to pay the buyer a specific, guaranteed interest rate on their contributions to the account |
           | GUARDIAN | An account of a child in the parent's name, with legal title to the assets in the account, as well as all capital gains and tax liabilities produced from the account belonging to the parent |
           | HOMEEQUITYLOAN | A type of loan in which the borrower uses the equity of his or her home as collateral |
           | HOMELINEOFCREDIT | A loan in which the lender agrees to lend a maximum amount within an agreed period, where the collateral is the borrower's equity in their house |
-          | INDIVIDUALPENSIONPLAN | An Individual Pension Plan (IPP) is an employer-sponsored, defined benefit pension plan that can be set up by and for a single person |
+          | INDIVIDUALPENSIONPLAN | An Individual Pension Plan (IPP) is an employer-sponsored, defined benefit pension plan that can be set up by and for a single person. |
           | INSTALLMENT | A type of agreement or contract involving a loan that is repaid over time with a set number of scheduled payments |
           | INSTITUTIONALTRUST | |
-          | INVESTMENTACCOUNT | A standard investment account that is not registered |
+          | INVESTMENTACCOUNT | A standard investment account that is not registered. |
           | IRA | An individual retirement account (IRA) is a tax-advantaged account that individuals use to save and invest for retirement |
           | KEOGH | A tax-deferred pension plan available to self-employed individuals or unincorporated businesses for retirement purposes |
-          | LIFEINCOMEFUND | A Life Income Fund (LIF) is a type of registered retirement income fund (RRIF) that can be used to hold locked-in pension funds as well as other assets for an eventual payout as retirement income |
+          | LIFEINCOMEFUND | A Life Income Fund (LIF) is a type of registered retirement income fund (RRIF) that can be used to hold locked-in pension funds as well as other assets for an eventual payout as retirement income. |
           | LINEOFCREDIT | A credit facility extended by a bank or other financial institution to a government, business or individual customer that enables the customer to draw on the facility when the customer needs funds |
           | LOAN | The lending of money by one or more individuals, organizations, or other entities to other individuals, organizations etc |
-          | LOCKEDINRETIREMENTACCOUNT | A Locked-in Retirement Account (LIRA) is a pension savings account that holds funds that cannot be withdrawn until retirement |
-          | LOCKEDINRETIREMENTINCOMEFUND | A Locked-in Retirement Income Fund (LRIF) is a locked-in account which has been created with funds that originated with a registered pension plan (RPP) |
+          | LOCKEDINRETIREMENTACCOUNT | A Locked-in Retirement Account (LIRA) is a pension savings account that holds funds that cannot be withdrawn until retirement. |
+          | LOCKEDINRETIREMENTINCOMEFUND| A Locked-in Retirement Income Fund (LRIF) is a locked-in account which has been created with funds that originated with a registered pension plan (RPP). |
           | LOCKEDINRETIREMENTSAVINGSPLAN | A Locked-in Retirement Savings plan (LRSP) is a pension savings account that holds funds that cannot be withdrawn until retirement (similar to LIRA)  |
           | LONGTERMDISABILITY | Insurance that replaces a portion of the policyholder's income due to a disability for an extended period of time, usually more than a year |
           | MILITARYLOAN | |
@@ -891,26 +858,25 @@ components:
           | OTHERDEPOSIT | Use when none of the listed enums apply |
           | OTHERINVESTMENT | Use when none of the listed enums apply |
           | PERSONALLOAN | A type of debt that is not protected by a guarantor, or collateralized by a lien on specific assets of the borrower |
-          | POOLEDREGISTEREDPENSIONPLAN | A Pooled Registered Pension Plan (PRPP) is a type of pension plan that is similar to a defined contribution plan; however, employer contributions are not mandatory |
-          | PREPAID | An account that is preloaded with funds before first use, such as a gift card |
-          | PRESCRIBEDREGISTEREDRETIREMENTINCOMEFUND | A Prescribed Registered Retirement Income Fund (PRRIF) is a personal retirement income fund that is governed by the federal Income Tax Act (Canada) |
-          | REGISTEREDDISABILITYSAVINGSPLAN | A Registered Disability Savings Plan (RDSP) is a savings plan intended to help parents and others save for the long term financial security of a person who is eligible for the disability tax credit (DTC) |
-          | REGISTEREDEDUCATIONSAVINGSPLAN | A Registered Education Savings Plan (RESP) is a special savings account for parents/custodians/others who want to save for their child's education after high school and is registered with the Canadian federal government |
-          | REGISTEREDPENSIONPLAN | A Registered Pension Plan (RPP) is a pension plan that has been set up by an employer, and registered by the Canadian federal government |
-          | REGISTEREDRETIREMENTINCOMEFUND | A Registered Retirement Income Fund (RRIF) is an arrangement between an individual and a carrier (an insurance company, a trust company or a bank) that is registered with the Canadian federal government |
-          | REGISTEREDRETIREMENTSAVINGSPLAN | A Registered Retirement Savings Plan (RRSP) is a savings plan, registered with the Canadian federal government that you can contribute to for retirement purposes |
-          | RESTRICTEDLIFEINCOMEFUND | Restricted Life Income Fund (RLIF) is a retirement option that operates like a LIF. The RLIF provides a one-time 50% unlocking option |
-          | RESTRICTEDLOCKEDINSAVINGSPLAN | A Restricted Locked-In Savings Plan (RLSP) is an investment account that can only be established as a result of a transfer of funds from an RLIF |
+          | POOLEDREGISTEREDPENSIONPLAN | A Pooled Registered Pension Plan (PRPP) is a type of pension plan that is similar to a defined contribution plan; however, employer contributions are not mandatory. |
+          | PRESCRIBEDREGISTEREDRETIREMENTINCOMEFUND | A Prescribed Registered Retirement Income Fund (PRRIF) is a personal retirement income fund that is governed by the federal Income Tax Act (Canada). |
+          | REGISTEREDDISABILITYSAVINGSPLAN | A Registered Disability Savings Plan (RDSP) is a savings plan intended to help parents and others save for the long term financial security of a person who is eligible for the disability tax credit (DTC). |
+          | REGISTEREDEDUCATIONSAVINGSPLAN | A Registered Education Savings Plan (RESP) is a special savings account for parents/custodians/others who want to save for their child's education after high school and is registered with the Canadian federal government.|
+          | REGISTEREDPENSIONPLAN | A Registered Pension Plan (RPP) is a pension plan that has been set up by an employer, and registered by the Canadian federal government.|
+          | REGISTEREDRETIREMENTINCOMEFUND | A Registered Retirement Income Fund (RRIF) is an arrangement between an individual and a carrier (an insurance company, a trust company or a bank) that is registered with the Canadian federal government.|
+          | REGISTEREDRETIREMENTSAVINGSPLAN | A Registered Retirement Savings Plan (RRSP) is a savings plan, registered with the Canadian federal government that you can contribute to for retirement purposes. |
+          | RESTRICTEDLIFEINCOMEFUND| Restricted Life Income Fund (RLIF) is a retirement option that operates like a LIF. The RLIF provides a one-time 50% unlocking option. |
+          | RESTRICTEDLOCKEDINSAVINGSPLAN| A Restricted Locked-In Savings Plan (RLSP) is an investment account that can only be established as a result of a transfer of funds from an RLIF |
           | ROLLOVER | |
           | ROTH | An individual retirement account that offers tax-free growth and tax-free withdrawals in retirement |
           | SARSEP | A simplified employee pension (SEP) plan set up before 1997 that includes a salary reduction arrangement |
           | SAVINGS | An interest-bearing deposit account held at a bank or other financial institution |
           | SMBLOAN | |
           | SHORTTERMDISABILITY | Insurance that replaces a portion of the policyholder's income due to a disability for a short period of time, usually less than a year |
-          | SPECIFIEDPENSIONPLAN | A Specified Pension Plan (SPP) is a pension plan or similar arrangement that has been prescribed under the Income Tax Regulations as a "specified pension plan" for purposes of the Income Tax Act |
+          | SPECIFIEDPENSIONPLAN | A Specified Pension Plan (SPP) is a pension plan or similar arrangement that has been prescribed under the Income Tax Regulations as a "specified pension plan" for purposes of the Income Tax Act.|
           | STUDENTLOAN | A type of loan designed to help students pay for post-secondary education and the associated fees, such as tuition, books and supplies, and living expenses |
           | TAXABLE | |
-          | TAXFREESAVINGSACCOUNT | A Tax-Free Savings Account (TFSA) is a way for over the age of 18 to set money aside, tax free, throughout their lifetime |
+          | TAXFREESAVINGSACCOUNT | A Tax-Free Savings Account (TFSA) is a way for over the age of 18 to set money aside, tax free, throughout their lifetime. |
           | TDA | |
           | TERM | Life insurance that provides coverage at a fixed rate of payments for a limited period of time |
           | TRUST | A type of financial account that is opened by an individual and managed by a designated trustee for the benefit of a third party in accordance with agreed-upon terms |
@@ -940,7 +906,6 @@ components:
         - DEFERREDPROFITSHARINGPLAN
         - DEFINEDBENEFIT
         - DIGITALASSET
-        - DIGITALWALLET
         - ESCROW
         - ESOP
         - FIXEDANNUITY
@@ -968,7 +933,6 @@ components:
         - OTHERINVESTMENT
         - PERSONALLOAN
         - POOLEDREGISTEREDPENSIONPLAN
-        - PREPAID
         - PRESCRIBEDREGISTEREDRETIREMENTINCOMEFUND
         - REGISTEREDDISABILITYSAVINGSPLAN
         - REGISTEREDEDUCATIONSAVINGSPLAN
@@ -1040,7 +1004,7 @@ components:
       title: Date String
       description: >-
         ISO 8601 full-date in format 'YYYY-MM-DD' according
-        to [IETF RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339.html#section-5.6)
+        to [IETF RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
       type: string
       format: date
       maxLength: 10
@@ -1093,31 +1057,19 @@ components:
         - V5.3.2
         - V5.3.3
         - V6.0.0
-        - V6.1.0
-        - V6.2.0
 
     FdxOauthScope:
       title: FDX OAuth scopes
-      description: >-
-        Represents an authorization claim aligned with FDX Data Cluster.
-        `fdx:accountpayments:read` is deprecated and replaced with `fdx:paymentsupport:read`
-        in FDX release V6.1.0, `fdx:accountpayments:read` will be removed with V7 release
+      description: Represents an authorization claim aligned with FDX Data Cluster
       type: string
       enum:
         - fdx:accountbasic:read
         - fdx:accountdetailed:read
-        - fdx:accountpayments:read  # Deprecated
-        - fdx:bills:read
+        - fdx:accountpayments:read
         - fdx:customercontact:read
         - fdx:customerpersonal:read
-        - fdx:images:read
         - fdx:investments:read
-        - fdx:notifications:publish
-        - fdx:notifications:subscribe
-        - fdx:paymentsupport:read
-        - fdx:rewards:read
         - fdx:statements:read
-        - fdx:tax:read
         - fdx:transactions:read
 
     HttpAction:
@@ -1422,10 +1374,8 @@ components:
     Iso4217CurrencyCode:
       title: ISO 4217 Currency Code
       description: >-
-        Currency, fund and precious metal codes effective from June 25, 2024 per
-        [ISO 4217 Currency Code Maintenance](https://www.six-group.com/en/products-services/financial-information/data-standards.html).
-        ZWL (the Zimbabwean dollar) expires August 31, 2024 and is deprecated
-        and replaced with ZWG (Zimbabwe Gold), effective on June 25, 2024
+        Currency, fund and precious metal codes as of Jan. 1, 2023 per
+        [ISO 4217 Currency Code Maintenance](https://www.six-group.com/en/products-services/financial-information/data-standards.html)
       type: string
       enum:
         - AED
@@ -1607,8 +1557,7 @@ components:
         - YER
         - ZAR
         - ZMW
-        - ZWG
-        - ZWL  # Deprecated
+        - ZWL
 
     OauthScope:
       title: OpenID OAuth Scopes
@@ -1763,7 +1712,7 @@ components:
       title: Timestamp
       description: >-
         ISO 8601 date-time in format 'YYYY-MM-DDThh:mm:ss.nnn[Z|[+|-]hh:mm]' according to
-        [IETF RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339.html#section-5.6)
+        [IETF RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14)
       type: string
       format: date-time
       example: '2021-07-15T14:46:41.375Z'
@@ -1771,74 +1720,9 @@ components:
   responses:
     ############################################################
     #
-    # Standard error responses, among those defined in the latest
-    # FDX API Specification document, section 6.2 Errors
+    # Standard error responses
     #
     ############################################################
-
-    '400':
-      description: Input sent by client does not satisfy API specification
-      headers:
-        x-fapi-interaction-id:
-          $ref: '#/components/headers/x-fapi-interaction-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            Invalid Input:
-              value:
-                code: '401'
-                message: Invalid Input
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
-
-    '401':
-      description: Request lacks valid authentication credentials for the target resource
-      headers:
-        x-fapi-interaction-id:
-          $ref: '#/components/headers/x-fapi-interaction-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            Unauthorized:
-              value:
-                code: '603'
-                message: Authentication failed
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
-
-    '403':
-      description: Forbidden, server understands the request but refuses to authorize it
-      headers:
-        x-fapi-interaction-id:
-          $ref: '#/components/headers/x-fapi-interaction-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            Forbidden:
-              value:
-                code: '403'
-                message: Forbidden
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
-
-    '404':
-      description: Data not found for request parameters
-      headers:
-        x-fapi-interaction-id:
-          $ref: '#/components/headers/x-fapi-interaction-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            Data not found for request parameters:
-              value:
-                code: '1107'
-                message: Data not found for request parameters
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
 
     '406':
       description: Content Type not Supported
@@ -1854,26 +1738,10 @@ components:
               value:
                 code: '1203'
                 message: Content Type not Supported
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
-
-    '409':
-      description: Conflict with current state of target resource
-      headers:
-        x-fapi-interaction-id:
-          $ref: '#/components/headers/x-fapi-interaction-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            Conflict:
-              value:
-                code: '409'
-                message: Conflict with current state of target resource
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
+                debugMessage: Provider custom developer-level error details for troubleshooting
 
     '500':
-      description: Catch-all exception where request was not processed due to an internal outage/issue.
+      description: Catch all exception where request was not processed due to an internal outage/issue.
         Consider other more specific errors before using this error
       headers:
         x-fapi-interaction-id:
@@ -1887,7 +1755,7 @@ components:
               value:
                 code: '500'
                 message: Internal server error
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
+                debugMessage: Provider custom developer-level error details for troubleshooting
 
     '501':
       description: Error when FdxVersion in Header is not one of those implemented at backend
@@ -1903,7 +1771,7 @@ components:
               value:
                 code: '1106'
                 message: FdxVersion not supported or not implemented
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
+                debugMessage: Provider custom developer-level error details for troubleshooting
 
     '503':
       description: System is down for maintenance
@@ -1919,4 +1787,4 @@ components:
               value:
                 code: '503'
                 message: Scheduled Maintenance
-                debugMessage: Data Provider's custom developer-level error details for troubleshooting
+                debugMessage: Provider custom developer-level error details for troubleshooting
