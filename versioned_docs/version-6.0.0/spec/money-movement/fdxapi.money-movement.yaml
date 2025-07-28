@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  version: '6.2.0'
-  title: FDX V6.2.0 Money Movement API
-  description: Financial Data Exchange V6.2.0 Money Movement API
+  version: '6.0.0'
+  title: FDX V6.0.0 Money Movement API
+  description: Financial Data Exchange V6.0.0 Money Movement API
   contact:
     name: Financial Data Exchange
     url: 'https://financialdataexchange.org/'
@@ -10,17 +10,9 @@ info:
   license:
     name: FDX API License Agreement (11-13-2019)
     url: 'https://financialdataexchange.org/common/Uploaded%20files/Policies/FDX%20API%20License%20Agreement-(11-13-2019).pdf'
-  x-server-configuration:
-    default-environment: production
-    default-server: MoneyMovement
-    environments:
-    - name: production
-      servers:
-      - name: MoneyMovement
-        url: 'https://financialdataexchange-prod.apigee.net/fdx-money-movement-api-v6.2.0'
 servers:
-  - url: 'https://financialdataexchange-prod.apigee.net/fdx-money-movement-api-v6.2.0'
-    description: Financial Data Exchange V6 Money Movement API
+  - url: 'https://api.fi.com/fdx/v6'
+    description: Financial Data Exchange V6.0.0 Money Movement API
 tags:
   - name: Internal Transfers
     description: Manage internal transfers
@@ -32,8 +24,6 @@ tags:
     description: Manage payments
   - name: Recurring Payments
     description: Manage recurring payments
-security:
-  - bearerAuth: []
 paths:
   ############################################################
   #
@@ -43,8 +33,8 @@ paths:
 
   /payees:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchForPayees
       tags:
@@ -53,14 +43,14 @@ paths:
       description: Search for payees
       parameters:
         - $ref: '#/components/parameters/UpdatedSinceQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -101,13 +91,26 @@ paths:
                           status: "ACTIVE"
                           expiresTimestamp: "2025-03-15T13:29:19+0000"
         '404':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/404'
+          description: Data not found for request parameters
+          headers:
+            x-fapi-interaction-id:
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+          content:
+            application/json:
+              schema:
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+              examples:
+                Data not found for request parameters:
+                  value:
+                    code: '1107'
+                    message: Data not found for request parameters
+                    debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     post:
       operationId: createPayee
       tags:
@@ -123,34 +126,29 @@ paths:
               description: The data of the Payee to be updated
               $ref: '#/components/schemas/PayeeForUpdate'
             examples:
-              Create a Payee with all properties:
+              Create a Payee:
                 value:
                   merchant:
-                    displayName: My Cell Phone Biller
+                    displayName: "My Cell Phone Biller"
                     name:
-                      first: Junie
-                      middle: B
-                      last: Jones
-                      suffix: Jr
-                      prefix: Ms
-                      company: US Cellular
+                      company: "US Cellular"
                     address:
                       line1: "10 Cellular way"
                       city: "New York"
                       region: "NY"
                       postalCode: "10001"
                     phone:
-                      type: BUSINESS
+                      type: CELL
                       country: '+1'
-                      number: '2013329944'
+                      number: "2013329944"
                     merchantAccountIds:
-                      - '999900008888'
+                      - "999900008888"
       responses:
         '200':
           description: Payee Exists
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -180,7 +178,7 @@ paths:
           description: Created
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -210,7 +208,7 @@ paths:
           description: Duplicate Request
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -239,8 +237,8 @@ paths:
 
   /payees/{payeeId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getPayee
       tags:
@@ -254,7 +252,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -284,11 +282,11 @@ paths:
           description: Payee with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payee not found:
                   value:
@@ -296,11 +294,11 @@ paths:
                     message: Payee not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     patch:
       operationId: updatePayee
       tags:
@@ -345,7 +343,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -375,11 +373,11 @@ paths:
           description: Input sent by client does not satisfy API specification
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid Input:
                   value:
@@ -395,11 +393,11 @@ paths:
           description: Payee with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payee not found:
                   value:
@@ -410,7 +408,7 @@ paths:
           description: Duplicate Request
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -437,11 +435,11 @@ paths:
                       status: ACTIVE
                       expiresTimestamp: '2025-03-15T13:29:19+0000'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     delete:
       operationId: deletePayee
       tags:
@@ -455,7 +453,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -469,11 +467,11 @@ paths:
           description: Payee cannot be modified or deleted
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payee cannot be modified or deleted:
                   value:
@@ -484,11 +482,11 @@ paths:
           description: Payee with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payee not found:
                   value:
@@ -496,21 +494,22 @@ paths:
                     message: Payee not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /payment-initiation-parties:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     post:
       summary: Create payment initiation party
       tags:
         - Payment Initiation Parties
-      description: Create a payment initiation party associated with a customer profile
+      description: |
+        Create a payment initiation party associated with a customer profile
       operationId: createPaymentInitiationParty
       parameters:
         - $ref: '#/components/parameters/IdempotencyKeyHeader'
@@ -524,53 +523,55 @@ paths:
           description: Created payment initiation party
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaymentInitiationPartyCreateResponse'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     get:
       summary: Collection of payment initiation parties
       tags:
         - Payment Initiation Parties
-      description: Retrieve the payment initiation parties associated with a customer profile
+      description: |
+        Retrieve the payment initiation parties associated with a customer profile
       operationId: listPaymentInitiationParties
       parameters:
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaymentInitiationParties'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /payment-initiation-parties/{paymentInitiationPartyId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     summary: Payment initiation party details
     get:
       summary: Retrieve payment initiation party details
       tags:
         - Payment Initiation Parties
-      description: Retrieve the payment initiation party details by ID
+      description: |
+        Retrieve the payment initiation party details by ID.
       operationId: getPaymentInitiationParty
       parameters:
         - $ref: '#/components/parameters/PaymentInitiationPartyIdPath'
@@ -579,22 +580,23 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaymentInitiationParty'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     patch:
       summary: Update payment initiation party
       tags:
         - Payment Initiation Parties
-      description: Update the payment initiation party associated with a customer profile
+      description: |
+        Update the payment initiation party associated with a customer profile
       operationId: updatePaymentInitiationParty
       parameters:
         - $ref: '#/components/parameters/PaymentInitiationPartyIdPath'
@@ -609,19 +611,20 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
     delete:
       summary: Remove payment initiation party
       tags:
         - Payment Initiation Parties
-      description: Remove the payment initiation party associated with a customer profile
+      description: |
+        Remove the payment initiation party associated with a customer profile
       operationId: deletePaymentInitiationParty
       parameters:
         - $ref: '#/components/parameters/PaymentInitiationPartyIdPath'
@@ -630,24 +633,26 @@ paths:
           description: No Content
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /payment-initiation-parties/{paymentInitiationPartyId}/payment-methods:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     summary: Payment methods registered with a payment initiation party
     post:
-      summary: Register a payment initiation party to a payment method
+      summary: |
+        Register a payment initiation party to a payment method
       tags:
         - Payment Initiation Parties
-      description: Registration of a payment initiation party to a payment method
+      description: |
+        Registration of a payment initiation party to a payment method
       operationId: createPaymentMethod
       parameters:
         - $ref: '#/components/parameters/PaymentInitiationPartyIdPath'
@@ -662,28 +667,31 @@ paths:
           description: Created payment method registration
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaymentInitiationPartyMethodCreateResponse'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /payment-initiation-parties/{paymentInitiationPartyId}/payment-methods/{paymentMethodRegistrationId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     summary: Payment methods registered with a payment initiation party details
     get:
-      summary: Retrieve details of the payment method registered with a payment initiation party
+      summary: |
+        Retrieve details of the payment method registered with a payment
+        initiation party
       tags:
         - Payment Initiation Parties
-      description: Retrieve the details of a payment method registered with a payment initiation party
+      description: |
+        Retrieve the details of a payment method registered with a payment initiation party
       operationId: getPaymentMethodRegistration
       parameters:
         - $ref: '#/components/parameters/PaymentInitiationPartyIdPath'
@@ -693,22 +701,24 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaymentInitiationPartyToPaymentMethod'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     delete:
-      summary: Remove a payment method registration to a payment initiation party
+      summary: |
+        Remove a payment method registration to a payment initiation party
       tags:
         - Payment Initiation Parties
-      description: Remove the registered payment method from a payment initiation party
+      description: |
+        Remove the registered payment method from a payment initiation party
       operationId: deletePaymentMethodRegistration
       parameters:
         - $ref: '#/components/parameters/PaymentInitiationPartyIdPath'
@@ -718,18 +728,20 @@ paths:
           description: No Content
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     patch:
-      summary: Update the payment method registration associated with payment initiation party
+      summary: |
+        Update the payment method registration associated with payment initiation party
       tags:
         - Payment Initiation Parties
-      description: Update the payment method registration associated with payment initiation party
+      description: |
+        Update the payment method registration associated with payment initiation party
       operationId: updatePaymentMethodRegistration
       parameters:
         - $ref: '#/components/parameters/PaymentInitiationPartyIdPath'
@@ -744,18 +756,18 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /payments:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchForPayments
       tags:
@@ -764,14 +776,14 @@ paths:
       description: Search for payments
       parameters:
         - $ref: '#/components/parameters/UpdatedSinceQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -807,13 +819,26 @@ paths:
                           - href: "/recurring-payment/RECURRING-PAYMENT-485"
                             rel: recurringPayment
         '404':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/404'
+          description: Data not found for request parameters
+          headers:
+            x-fapi-interaction-id:
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+          content:
+            application/json:
+              schema:
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+              examples:
+                Data not found for request parameters:
+                  value:
+                    code: '1107'
+                    message: Data not found for request parameters
+                    debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     post:
       operationId: schedulePayment
       tags:
@@ -841,7 +866,7 @@ paths:
           description: Duplicate Payment
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -860,7 +885,7 @@ paths:
           description: Created
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -879,11 +904,11 @@ paths:
           description: Request is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Due date too soon:
                   value:
@@ -899,11 +924,11 @@ paths:
           description: Requested payment is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payee not found:
                   value:
@@ -944,7 +969,7 @@ paths:
           description: Duplicate Request
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -963,11 +988,11 @@ paths:
           description: Account type not supported
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account type not supported:
                   value:
@@ -975,16 +1000,16 @@ paths:
                     message: Account type not supported
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /payments/{paymentId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getPayment
       tags:
@@ -998,7 +1023,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1023,11 +1048,11 @@ paths:
           description: A payment with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payment not found:
                   value:
@@ -1035,11 +1060,11 @@ paths:
                     message: Payment not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     patch:
       operationId: updatePayment
       tags:
@@ -1079,7 +1104,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1104,11 +1129,11 @@ paths:
           description: Request is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Due date too soon:
                   value:
@@ -1129,11 +1154,11 @@ paths:
           description: Requested payment change is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payment not found:
                   value:
@@ -1179,7 +1204,7 @@ paths:
           description: Duplicate Request
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1204,11 +1229,11 @@ paths:
           description: Account type not supported
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Internal server error:
                   value:
@@ -1216,11 +1241,11 @@ paths:
                     message: Account type not supported
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     delete:
       operationId: cancelPayment
       tags:
@@ -1234,7 +1259,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1258,11 +1283,11 @@ paths:
           description: Payment cannot be modified or cancelled at this time. Likely due to the state that it is in
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payment cannot be modified or cancelled:
                   value:
@@ -1273,11 +1298,11 @@ paths:
           description: A payment with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payment not found:
                   value:
@@ -1285,16 +1310,16 @@ paths:
                     message: Payment not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /recurring-payments:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchForRecurringPayments
       tags:
@@ -1303,14 +1328,14 @@ paths:
       description: Search for recurring payments
       parameters:
         - $ref: '#/components/parameters/UpdatedSinceQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1345,13 +1370,26 @@ paths:
                         cancelledTimestamp: "2021-03-14T13:29:19+0000"
                         status: "CANCELLED"
         '404':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/404'
+          description: Data not found for request parameters
+          headers:
+            x-fapi-interaction-id:
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+          content:
+            application/json:
+              schema:
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+              examples:
+                Data not found for request parameters:
+                  value:
+                    code: '1107'
+                    message: Data not found for request parameters
+                    debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
     post:
       operationId: scheduleRecurringPayment
@@ -1384,7 +1422,7 @@ paths:
           description: Duplicate Recurring Payment
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1407,7 +1445,7 @@ paths:
           description: Created
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1430,11 +1468,11 @@ paths:
           description: Request is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Due date too soon:
                   value:
@@ -1455,11 +1493,11 @@ paths:
           description: Requested payment is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payee not found:
                   value:
@@ -1500,7 +1538,7 @@ paths:
           description: Duplicate Request
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1523,11 +1561,11 @@ paths:
           description: Account type not supported
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account type not supported:
                   value:
@@ -1535,16 +1573,16 @@ paths:
                     message: Account type not supported
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /recurring-payments/{recurringPaymentId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getRecurringPayment
       tags:
@@ -1558,7 +1596,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1581,11 +1619,11 @@ paths:
           description: A recurring payment with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Recurring payment not found:
                   value:
@@ -1593,11 +1631,11 @@ paths:
                     message: Recurring payment not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     patch:
       operationId: updateRecurringPayment
       tags:
@@ -1643,7 +1681,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1666,11 +1704,11 @@ paths:
           description: Request is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Due date too soon:
                   value:
@@ -1686,11 +1724,11 @@ paths:
           description: Requested recurring payment change is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Recurring payment not found:
                   value:
@@ -1736,7 +1774,7 @@ paths:
           description: Duplicate Request
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1759,11 +1797,11 @@ paths:
           description: Account type not supported
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account type not supported:
                   value:
@@ -1771,11 +1809,11 @@ paths:
                     message: Account type not supported
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     delete:
       operationId: cancelRecurringPayment
       tags:
@@ -1789,7 +1827,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1813,11 +1851,11 @@ paths:
           description: Recurring payment cannot be modified or cancelled at this time. Likely due to the state that it is in
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Recurring payment cannot be modified or cancelled:
                   value:
@@ -1828,11 +1866,11 @@ paths:
           description: A recurring payment with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Recurring payment not found:
                   value:
@@ -1840,16 +1878,16 @@ paths:
                     message: Recurring payment not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /recurring-payments/{recurringPaymentId}/payments:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getPaymentsForRecurringPayment
       tags:
@@ -1859,14 +1897,14 @@ paths:
       parameters:
         - $ref: '#/components/parameters/RecurringPaymentIdPath'
         - $ref: '#/components/parameters/UpdatedSinceQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1905,11 +1943,11 @@ paths:
           description: A recurring payment with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Recurring payment not found:
                   value:
@@ -1917,16 +1955,16 @@ paths:
                     message: Recurring payment not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /transfers:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchForTransfers
       tags:
@@ -1935,18 +1973,18 @@ paths:
       summary: Search for transfers between accounts
       parameters:
         - $ref: '#/components/parameters/UpdatedSinceQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
         - name: searchStartTransferDate
           in: query
           description: Start time for use in retrieval of transfers by transfer date
           schema:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+            $ref: './fdxapi.components.yaml#/components/schemas/DateString'
         - name: searchEndTransferDate
           in: query
           description: End time for use in retrieval of transfers by transfer date
           schema:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+            $ref: './fdxapi.components.yaml#/components/schemas/DateString'
         - name: searchFromAccountIds
           in: query
           description: Search for transfers by source account
@@ -1980,7 +2018,7 @@ paths:
           description: Success
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1989,11 +2027,11 @@ paths:
           description: Start or end date value is not in the ISO 8601 format
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid start or end date:
                   value:
@@ -2006,13 +2044,26 @@ paths:
                     message: Invalid date range
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '404':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/404'
+          description: Data not found for request parameters
+          headers:
+            x-fapi-interaction-id:
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+          content:
+            application/json:
+              schema:
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+              examples:
+                Data not found for request parameters:
+                  value:
+                    code: '1107'
+                    message: Data not found for request parameters
+                    debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     post:
       operationId: requestAccountTransfer
       tags:
@@ -2048,7 +2099,7 @@ paths:
           description: Initial status of the requested transfer
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -2075,11 +2126,11 @@ paths:
           description: Source account does not have sufficient funds
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Insufficient funds:
                   value:
@@ -2090,11 +2141,11 @@ paths:
           description: Account not authorized for transfer
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Source account not authorized for transfer:
                   value:
@@ -2110,11 +2161,11 @@ paths:
           description: Requested transfer is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Source account not found:
                   value:
@@ -2140,11 +2191,11 @@ paths:
           description: Duplicate transfer request
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Duplicate transfer request:
                   value:
@@ -2152,16 +2203,16 @@ paths:
                     message: Duplicate transfer request
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /transfers/{transferId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getTransfer
       tags:
@@ -2175,7 +2226,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -2211,7 +2262,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -2244,8 +2295,8 @@ components:
     #
     ############################################################
 
-    bearerAuth:
-      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/bearerAuth'
+    OAuthFapi1Advanced:
+      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Advanced'
 
   parameters:
     ############################################################
@@ -2259,7 +2310,7 @@ components:
       name: idempotency-key
       required: true
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
       description: Used to de-duplicate requests
 
     PayeeIdPath:
@@ -2268,7 +2319,7 @@ components:
       description: Payee Identifier. Uniquely identifies a payee
       required: true
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
 
     PaymentIdPath:
       name: paymentId
@@ -2276,12 +2327,12 @@ components:
       description: Payment Identifier. Uniquely identifies a payment
       required: true
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
 
     PaymentInitiationPartyIdPath:
       name: paymentInitiationPartyId
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
       required: true
       in: path
       description: This is an unique identifier of a payment initiation party
@@ -2289,10 +2340,12 @@ components:
     PaymentMethodRegistrationIdPath:
       name: paymentMethodRegistrationId
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
       required: true
       in: path
-      description: Registration identifier between a payment initiation party and a payment method
+      description: |
+        Registration identifier between a payment initiation party and a
+        payment method
 
     RecurringPaymentIdPath:
       name: recurringPaymentId
@@ -2300,7 +2353,7 @@ components:
       description: Recurring Payment Identifier. Uniquely identifies a recurring payment
       required: true
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
 
     TransferIdPath:
       name: transferId
@@ -2313,9 +2366,9 @@ components:
     UpdatedSinceQuery:
       name: updatedSince
       in: query
-      description: Return items that have been created or updated since the nextUpdateId
+      description: Return items that have been created or updated since the update id
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+        type: string
 
   schemas:
     ############################################################
@@ -2365,7 +2418,7 @@ components:
       type: object
       properties:
         directDepositId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Unique identifier of the direct deposit configuration
         registrationTypeCode:
           type: string
@@ -2386,7 +2439,7 @@ components:
       type: object
       properties:
         idCode:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Identification code
 
     ExternalFinancialInstitutionIdScheme:
@@ -2395,12 +2448,14 @@ components:
       type: object
       properties:
         idCode:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Identification code
 
     FinancialInstitution:
       title: Financial Institution entity
-      description: Details of the Financial Institution that is owning the destination account
+      description: |
+        Details of the Financial Institution that is owning the destination
+        account
       type: object
       properties:
         name:
@@ -2408,7 +2463,7 @@ components:
           description: Name of the financial institution
         fiId:
           description: Financial institution identifier
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/BICFIDec2014Identifier'
             - $ref: '#/components/schemas/Iso9362BusinessIdCode2022'
             - $ref: '#/components/schemas/GenericFinancialInstitutionId'
@@ -2424,14 +2479,14 @@ components:
       type: object
       properties:
         accountId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Account identifier
         issuerName:
           type: string
           description: Name of the issuer
         idScheme:
           description: Identification scheme associated with the generic account
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/ExternalAccountIdScheme'
             - $ref: '#/components/schemas/ProprietaryAccountIdScheme'
 
@@ -2441,14 +2496,14 @@ components:
       type: object
       properties:
         fiId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Financial institution identifier
         issuerName:
           type: string
           description: Issuer name
         idScheme:
           description: Identification scheme associated with the generic financial institution
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/ExternalFinancialInstitutionIdScheme'
             - $ref: '#/components/schemas/ProprietaryFinancialInstitutionIdScheme'
 
@@ -2460,7 +2515,7 @@ components:
         identify a person or business
       properties:
         idNumber:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Identification number
         issuedDate:
           type: string
@@ -2481,7 +2536,7 @@ components:
       type: object
       properties:
         iban2007Id:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Value of the account identifier
 
     Iso9362BusinessIdCode2022:
@@ -2507,13 +2562,13 @@ components:
           required: [status]
           properties:
             payeeId:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
-              description: Persistent unique identifier for a merchant payee
+              $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+              description: Uniquely identifies a payee. Used within the API to reference a payee
             status:
               $ref: '#/components/schemas/PartyStatus'
-              description: Defines the Merchant's lifecycle
+              description: Defines the Payee's lifecycle
             expiresTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: >-
                 Describes when the entity will be automatically deleted. The entity will not go into the
                 "DELETED" state. If this value is null or not provided, the entity will not expire automatically
@@ -2528,20 +2583,20 @@ components:
         displayName:
           type: string
           description: >-
-            User defined name for the merchant. Used by the customer to identify the merchant.
+            User defined name for the payee. Used by the customer to identify the payee.
             Not used by the system to process payments
         name:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/CustomerName'
-          description: Name of the merchant used to execute the payment
+          $ref: './fdxapi.components.yaml#/components/schemas/CustomerName'
+          description: Name of the payee used to execute the payment
         address:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DeliveryAddress'
-          description: Address of the merchant used to execute the payment
+          $ref: './fdxapi.components.yaml#/components/schemas/DeliveryAddress'
+          description: Address of the payee used to execute the payment
         phone:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/TelephoneNumber'
-          description: Phone number of the merchant used to execute the payment
+          $ref: './fdxapi.components.yaml#/components/schemas/TelephoneNumber'
+          description: Phone number of the payee used to execute the payment
         merchantAccountIds:
-          description: Account identifier(s) the customer has with the merchant
           type: array
+          description: Account identifier(s) the customer has with the payee
           items:
             type: string
 
@@ -2565,11 +2620,13 @@ components:
         many groups.
       properties:
         groupId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
-          description: Unique identifier of a group of payment initiation parties
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          description: |
+            Unique identifier of a group of payment initiation parties
         name:
           type: string
-          description: Associated name with the group of payment initiation parties
+          description: |
+            Associated name with the group of payment initiation parties
 
     Payee:
       title: Payee entity
@@ -2620,34 +2677,34 @@ components:
           required: [paymentId, status]
           properties:
             paymentId:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+              $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
               description: Uniquely identifies a payment. Used within the API to reference a payment
             recurringPaymentId:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+              $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
               description: >-
                 The recurring payment that spawned this payment.
                 Null if payment is not associated with a recurring payment
             scheduledTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the payment was scheduled
             processedTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the payment was processed
             failedTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the payment failed.
                 Includes when the payment was determined to lack sufficient funds
             cancelledTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the payment was cancelled
             startedProcessingTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the payment execution started
             status:
               $ref: '#/components/schemas/PaymentStatus'
               description: Defines the status of the payment
             links:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLinks'
+              $ref: './fdxapi.components.yaml#/components/schemas/HateoasLinks'
               description: Links to related payment entities
 
     PaymentDeliveryAddress:
@@ -2658,14 +2715,14 @@ components:
       type: object
       properties:
         type:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DeliveryAddressType'
+          $ref: './fdxapi.components.yaml#/components/schemas/DeliveryAddressType'
           description: Type of delivery address
         address:
           description: Value of the address
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/ElectronicAddress'
-            - $ref: '../components/fdxapi.components.yaml#/components/schemas/TelephoneNumber'
-            - $ref: '../components/fdxapi.components.yaml#/components/schemas/Address'
+            - $ref: './fdxapi.components.yaml#/components/schemas/TelephoneNumber'
+            - $ref: './fdxapi.components.yaml#/components/schemas/Address'
 
     PaymentForUpdate:
       title: Payment For Update entity
@@ -2674,10 +2731,10 @@ components:
       required: [fromAccountId, toPayeeId, amount, dueDate]
       properties:
         fromAccountId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: ID of the account used to source funds for payment
         toPayeeId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: ID of the payee to receive funds for the payment
         amount:
           type: number
@@ -2685,9 +2742,9 @@ components:
           description: Amount for the payment. Must be positive
         merchantAccountId:
           type: string
-          description: User's account identifier with the merchant
+          description: User's account identifier with the payee
         dueDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date that the funds are scheduled to be delivered
 
     PaymentGenericAccount:
@@ -2696,20 +2753,20 @@ components:
       type: object
       properties:
         accountNumber:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Unique identifier of the account number
         accountType:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/AccountType'
+          $ref: './fdxapi.components.yaml#/components/schemas/AccountType'
           description: Account type
         name:
           type: string
           description: Account name
         currencyCode:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Iso4217CurrencyCode'
+          $ref: './fdxapi.components.yaml#/components/schemas/Iso4217CurrencyCode'
           description: ISO 4217 currency code
         id:
           description: Identifier of the payment generic account
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/IBAN2007Identifier'
             - $ref: '#/components/schemas/GenericAccountIdentification'
         branch:
@@ -2721,7 +2778,7 @@ components:
       description: Payment initiation party summaries
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             paymentInitiationParties:
@@ -2740,7 +2797,7 @@ components:
         physical person; since they are registered for separate
         customers they will have separate entries.
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/Party'
+        - $ref: './fdxapi.components.yaml#/components/schemas/Party'
         - type: object
           properties:
             partyGroups:
@@ -2751,37 +2808,42 @@ components:
               items:
                 $ref: '#/components/schemas/PartyGroup'
             paymentInitiationPartyName:
-              description: Name entity associated with the payment initiation party
+              description: |
+                Name entity associated with the payment initiation party.
               $ref: '#/components/schemas/PaymentInitiationPartyName'
             governmentIssuedPartyIds:
               description: |
                 Government-issued identification documents that are
-                used to uniquely identify this payment initiation party
+                used to uniquely identify this payment initiation party.
               type: array
               items:
                 $ref: '#/components/schemas/GovernmentIssuedPartyIdentification'
             paymentMethods:
               type: array
-              description: Registrations between this payment initiation party and its payment methods
+              description: |
+                Registrations between this payment initiation party and its payment methods.
               items:
                 $ref: '#/components/schemas/PaymentInitiationPartyToPaymentMethod'
             locations:
               type: array
-              description: Delivery addresses associated with this payment initiation party
+              description: |
+                Delivery addresses associated with this payment initiation party.
               items:
                 $ref: '#/components/schemas/PaymentDeliveryAddress'
             expiresTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: |
                 Describes when the entity will be automatically deleted. The entity
                 will not go into the "DELETED" state. If this value is null or not
                 provided, the entity will not expire automatically
             status:
-              description: Current status of the payment initiation party entry
+              description: |
+                Current status of the payment initiation party entry.
               $ref: '#/components/schemas/PartyStatus'
             contactPreferences:
               type: array
-              description: Contact methods for this payment initiation party
+              description: |
+                Contact methods for this payment initiation party.
               items:
                 $ref: '#/components/schemas/PaymentInitiationPartyContactMethod'
 
@@ -2795,10 +2857,10 @@ components:
           description: Type of the contact preference
         address:
           description: Address details associated with this contact preference
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/ElectronicAddress'
-            - $ref: '../components/fdxapi.components.yaml#/components/schemas/TelephoneNumber'
-            - $ref: '../components/fdxapi.components.yaml#/components/schemas/Address'
+            - $ref: './fdxapi.components.yaml#/components/schemas/TelephoneNumber'
+            - $ref: './fdxapi.components.yaml#/components/schemas/Address'
 
     PaymentInitiationPartyCreateResponse:
       title: Payment Initiation Party Create Response entity
@@ -2806,26 +2868,31 @@ components:
         Entity that stores FI payment initiation party details. Each payment
         initiation party  will have a separate entry per FI customer, e.g. we
         might have multiple payment initiation parties that represent the same
-        physical person, nevertheless since they are registered for separate
+        physical person, never the less since they are registered for separate
         customers then they will have separate entries.
       type: object
       properties:
         paymentInitiationPartyId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Unique identifier of a payment initiation party
 
     PaymentInitiationPartyMethodCreateResponse:
       title: Payment Initiation Party Method Create Response entity
-      description: Registration between a payment initiation party and a Payment Method
+      description: |
+        Registration between a payment initiation party and a Payment Method
       type: object
       properties:
         registrationId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
-          description: Registration identifier between a payment initiation party and a payment method
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          description: |
+            Registration identifier between a payment initiation party and a
+            payment method
 
     PaymentInitiationPartyName:
       title: Payment Initiation Party Name entity
-      description: Generic entity that stores various names associated with a payment initiation party
+      description: |
+        Generic entity that stores various names associated with a
+        payment initiation party
       type: object
       properties:
         aliasName:
@@ -2833,9 +2900,9 @@ components:
           description: Alias name
         detail:
           description: Details of the name
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/OrganizationName'
-            - $ref: '../components/fdxapi.components.yaml#/components/schemas/IndividualName'
+            - $ref: './fdxapi.components.yaml#/components/schemas/IndividualName'
 
     PaymentInitiationPartySummary:
       title: Payment Initiation Party Summary entity
@@ -2851,18 +2918,19 @@ components:
 
     PaymentInitiationPartyToPaymentMethod:
       title: Payment Initiation Party To Payment Method entity
-      description: Registration between a payment initiation party and a Payment Method
+      description: |
+        Registration between a payment initiation party and a payment method
       type: object
       properties:
         registrationId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Registration ID
         paymentMethod:
           $ref: '#/components/schemas/PaymentMethod'
           description: Payment method details
         account:
           description: Account details
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/PaymentMethodCreditAccount'
             - $ref: '#/components/schemas/PaymentMethodDebitAccount'
         locations:
@@ -2877,20 +2945,22 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/PaymentMethodId'
-        - anyOf:
+        - oneOf:
             - $ref: '#/components/schemas/PaymentMethodSystemCode'
             - $ref: '#/components/schemas/PaymentMethodSystemProprietary'
 
     PaymentMethodCreditAccount:
       title: Payment Method Credit Account entity
-      description: A payment initiation party's payment method that credits an account
+      description: |
+        A payment initiation party's payment method for money movement that credits an account.
       type: object
       properties:
         accountRegistrationId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: |
-            Unique identifier of the registration of the destination account to the
-            payment method associated with a particular payment initiation party
+            Unique identifier of the registration of the destination account to
+            the payment method associated with a particular payment initiation
+            party
         directDeposit:
           $ref: '#/components/schemas/DirectDeposit'
           description: Direct deposit details
@@ -2900,14 +2970,16 @@ components:
 
     PaymentMethodDebitAccount:
       title: Payment Method Debit Account entity
-      description: A payment initiation party's payment method that debits an account
+      description: |
+        A payment initiation party's payment method for money movement that debits an account.
       type: object
       properties:
         accountRegistrationId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: |
-            Unique identifier of the registration of the sending account to the
-            payment method associated with a particular payment initiation party
+            Unique identifier of the registration of the sending account to
+            the payment method associated with a particular payment initiation
+            party
         sendingAccount:
           $ref: '#/components/schemas/PaymentGenericAccount'
           description: Sending account details
@@ -2991,7 +3063,7 @@ components:
           type: string
           description: |
             This property is related to the name of the identification scheme,
-            in the proprietary system, as per ISO 20022 v1
+            in the proprietary system, as per ISO 20022 v1.
 
     RecurringPayment:
       title: Recurring Payment entity
@@ -3004,21 +3076,21 @@ components:
           required: [status]
           properties:
             recurringPaymentId:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+              $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
               description: >-
                 Uniquely identifies a recurring payment.
                 Used within the API to reference a recurring payment
             scheduledTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the recurring payment was scheduled
             cancelledTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the recurring payment was cancelled
             processedTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the last payment executed
             failedTimestamp:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: When the recurring payment failed
             status:
               $ref: '#/components/schemas/RecurringPaymentStatus'
@@ -3051,10 +3123,10 @@ components:
           $ref: '#/components/schemas/RecurringPaymentDuration'
           description: Defines how long the payment repeats for
         fromAccountId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: ID of the account used to source funds for payment
         toPayeeId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: ID of the payee to receive funds for the payment
         amount:
           type: number
@@ -3062,9 +3134,9 @@ components:
           description: Amount for the payment. Must be positive
         merchantAccountId:
           type: string
-          description: User's account identifier with the merchant
+          description: User's account identifier with the payee
         dueDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date that the funds are scheduled to be delivered
 
     RecurringPayments:
@@ -3090,7 +3162,7 @@ components:
       type: object
       properties:
         page:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/PageMetadata'
+          $ref: './fdxapi.components.yaml#/components/schemas/PageMetadata'
           description: Offset IDs for navigating result sets
         updates:
           $ref: '#/components/schemas/UpdatesMetadata'
@@ -3104,11 +3176,11 @@ components:
       description: Resource URLs for retrieving changes, next or previous datasets
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PageMetadataLinks'
+        - $ref: './fdxapi.components.yaml#/components/schemas/PageMetadataLinks'
         - type: object
           properties:
             updates:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLink'
+              $ref: './fdxapi.components.yaml#/components/schemas/HateoasLink'
               description: Resource URL for retrieving updates since last request
 
     Transfer:
@@ -3120,13 +3192,13 @@ components:
         - type: object
           properties:
             referenceId:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+              $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
               description: Long-term persistent identifier for transfer attempt
             status:
               $ref: '#/components/schemas/PaymentStatus'
               description: CANCELLED, FAILED, NOFUNDS, PROCESSED, PROCESSING, SCHEDULED
             transferTime:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: Date of transfer attempt
 
     TransferForCreate:
@@ -3135,24 +3207,24 @@ components:
       type: object
       properties:
         transferId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: >-
             Client generated, long-term persistent identity of the transfer action.
             This ID should be maintained and returned by institution
         fromAccountId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long-term persistent identity of the source account
         toAccountId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long-term persistent identity of the destination account
         amount:
           type: number
           description: Positive amount of money to be transferred
         memo:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/String255'
+          $ref: './fdxapi.components.yaml#/components/schemas/String255'
           description: User-entered reason for transfer
         paymentDetails:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/PaymentDetails'
+          $ref: './fdxapi.components.yaml#/components/schemas/PaymentDetails'
           description: Payment details
 
     Transfers:
@@ -3176,7 +3248,7 @@ components:
       type: object
       properties:
         nextUpdateId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           example: "abc-xyz-123"
           description: Opaque identifier. Does not need to be numeric or have any specific pattern.
             Implementation specific
@@ -3226,7 +3298,7 @@ components:
       description: >-
         Defines the payment lifecycle.
           * `CANCELLED`: Payment was cancelled by the user
-          * `FAILED`: Payment failed for reasons other than "No Funds"
+          * `FAILED`: Payment failed for reasons other then "No Funds"
         For example: fraud, invalid payee, source account was closed etc.
           * `NOFUNDS`: Payment failed because of the lack of funds
           * `PROCESSED`: The payment has been executed by the payment service provider
