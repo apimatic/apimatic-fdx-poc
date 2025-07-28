@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  version: '6.2.0'
-  title: FDX V6.2.0 Core API
-  description: Financial Data Exchange V6.2.0 Core API
+  version: '6.0.0'
+  title: FDX V6.0.0 Core API
+  description: Financial Data Exchange V6.0.0 Core API
   contact:
     name: Financial Data Exchange
     url: 'https://financialdataexchange.org/'
@@ -10,19 +10,9 @@ info:
   license:
     name: FDX API License Agreement (11-13-2019)
     url: 'https://financialdataexchange.org/common/Uploaded%20files/Policies/FDX%20API%20License%20Agreement-(11-13-2019).pdf'
-  x-server-configuration:
-    default-environment: production
-    default-server: Core
-    environments:
-    - name: production
-      servers:
-      - name: Core
-        url: 'https://financialdataexchange-prod.apigee.net/fdx-core-api-v6.2.0'
 servers:
-  - url: 'https://financialdataexchange-prod.apigee.net/fdx-core-api-v6.2.0'
-    description: Financial Data Exchange V6 Core API
-security:
-  - bearerAuth: []    
+  - url: 'https://api.fi.com/fdx/v6'
+    description: Financial Data Exchange V6.0.0 Core API
 tags:
   - name: Account Information
     description: Search and view customer accounts
@@ -47,20 +37,14 @@ paths:
 
   /accounts:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchForAccounts
       tags:
         - Account Information
       summary: Search for accounts
-      description: >-
-        Return information for all of the customer's consented accounts or just
-        those accounts identified in the `accountIds` request parameter.
-        Use `ResultTypeQuery` parameter value of `lightweight` to retrieve minimal
-        descriptive information and the `accountId` for each account.
-        The `accountId` can then be used in the `getAccount` operation's path
-        `/accounts/{accountId}` to retrieve full details about each account
+      description: Query all information for a set of accounts provided in the payload
       parameters:
         - name: accountIds
           in: query
@@ -77,25 +61,25 @@ paths:
           schema:
             type: array
             items:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
         - name: endTime
           in: query
           description: End time for use in retrieval of transactions
           schema:
             type: array
             items:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/ResultTypeQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+        - $ref: './fdxapi.components.yaml#/components/parameters/ResultTypeQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: >-
             Array of accounts (DepositAccount, LoanAccount, LineOfCreditAccount, InvestmentAccount,
-            InsuranceAccount, AnnuityAccount, CommercialAccount, or DigitalWallet)
+            InsuranceAccount, AnnuityAccount, or CommercialAccount)
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -137,11 +121,11 @@ paths:
           description: Start or end date value is not in the ISO 8601 format
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid start or end date:
                   value:
@@ -154,35 +138,47 @@ paths:
                     message: Invalid date range
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '404':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/404'
+          description: Data not found for request parameters
+          headers:
+            x-fapi-interaction-id:
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+          content:
+            application/json:
+              schema:
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+              examples:
+                Data not found for request parameters:
+                  value:
+                    code: '1107'
+                    message: Data not found for request parameters
+                    debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /accounts/{accountId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getAccount
       tags:
         - Account Information
-      summary: Retrieve account details
-      description: >-
-        Retrieve full details about the account identified by `{accountId}` parameter
+      description: Get a specific account
+      summary: Get an account
       parameters:
         - $ref: '#/components/parameters/AccountIdPath'
       responses:
         '200':
           description: >-
-            This can be one of LoanAccount, DepositAccount, LineOfCreditAccount, InvestmentAccount,
-            InsuranceAccount, AnnuityAccount, CommercialAccount, or DigitalWallet
+            This can be one of LoanAccount, DepositAccount, LineOfCreditAccount,
+            InvestmentAccount, InsuranceAccount, AnnuityAccount, or CommercialAccount
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -206,11 +202,11 @@ paths:
           description: Account with id not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account not found:
                   value:
@@ -218,16 +214,16 @@ paths:
                     message: Account not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /accounts/{accountId}/asset-transfer-networks:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getAccountAssetTransferNetworks
       tags:
@@ -241,7 +237,7 @@ paths:
           description: Information required to facilitate asset transfer from this account
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -259,8 +255,8 @@ paths:
 
   /accounts/{accountId}/contact:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getAccountContact
       tags:
@@ -275,7 +271,7 @@ paths:
             Details used to verify an account
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -284,11 +280,11 @@ paths:
           description: Account with id not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account not found:
                   value:
@@ -296,16 +292,16 @@ paths:
                     message: Account not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /accounts/{accountId}/payment-networks:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getAccountPaymentNetworks
       tags:
@@ -314,14 +310,14 @@ paths:
       summary: Get payment networks supported by the account
       parameters:
         - $ref: '#/components/parameters/AccountIdPath'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: Information required to execute a payment transaction against this account
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -385,11 +381,11 @@ paths:
           description: Account with id not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account not found:
                   value:
@@ -407,16 +403,16 @@ paths:
                     message: Data not found for request parameters
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /accounts/{accountId}/statements:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchForAccountStatements
       tags:
@@ -429,14 +425,14 @@ paths:
         - $ref: '#/components/parameters/AccountIdPath'
         - $ref: '#/components/parameters/StartTimeQuery'
         - $ref: '#/components/parameters/EndTimeQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: Paginated list of available statements
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -457,11 +453,11 @@ paths:
           description: Start or end date value is not in the ISO 8601 format
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid start or end date:
                   value:
@@ -477,11 +473,11 @@ paths:
           description: Account with id not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account not found:
                   value:
@@ -494,16 +490,16 @@ paths:
                     message: Data not found for request parameters
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /accounts/{accountId}/statements/{statementId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getAccountStatement
       tags:
@@ -521,7 +517,7 @@ paths:
           description: An image of an account statement
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/pdf:
               schema:
@@ -552,16 +548,16 @@ paths:
           description: Statement is available at specified location. URL is returned via the `Location` HTTP header
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
         '400':
           description: Statement is processing and is not yet available
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Statement is Processing:
                   value:
@@ -572,11 +568,11 @@ paths:
           description: When account is present with no statements in it
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Statements not found for given Account:
                   value:
@@ -589,18 +585,18 @@ paths:
                     message: Statement id not found for Account
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '406':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/406'
+          $ref: './fdxapi.components.yaml#/components/responses/406'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /accounts/{accountId}/transaction-images/{imageId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getAccountTransactionImages
       tags:
@@ -615,7 +611,7 @@ paths:
           description: An image of transaction (such as a scanned check)
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/pdf:
               schema:
@@ -641,11 +637,11 @@ paths:
           description: Account or image with id not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account not found:
                   value:
@@ -658,18 +654,18 @@ paths:
                     message: Image Id not found for Transaction
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '406':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/406'
+          $ref: './fdxapi.components.yaml#/components/responses/406'
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /accounts/{accountId}/transactions:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchForAccountTransactions
       tags:
@@ -682,17 +678,17 @@ paths:
         - $ref: '#/components/parameters/AccountIdPath'
         - $ref: '#/components/parameters/StartTimeQuery'
         - $ref: '#/components/parameters/EndTimeQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: >-
-            Paginated collection of transactions, which can be one of DepositTransaction,
-            LoanTransaction, LineOfCreditTransaction, InvestmentTransaction, InsuranceTransaction,
-            CommercialTransaction, or DigitalWalletTransaction
+            Paginated collection of transactions, which can be one of
+            DepositTransaction, LoanTransaction, LineOfCreditTransaction,
+            InvestmentTransaction, InsuranceTransaction, or CommercialTransaction
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -742,11 +738,11 @@ paths:
           description: Start or end date value is not in the ISO 8601 format
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid start or end date:
                   value:
@@ -762,11 +758,11 @@ paths:
           description: Account with id not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account not found:
                   value:
@@ -779,16 +775,16 @@ paths:
                     message: Data not found for request parameters
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /reward-programs:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchRewardPrograms
       tags:
@@ -796,14 +792,14 @@ paths:
       description: Query all reward programs
       summary: Search reward programs
       parameters:
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: Data describing reward programs associated with accounts
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -875,8 +871,8 @@ paths:
 
   /reward-programs/{rewardProgramId}:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getRewardProgram
       tags:
@@ -890,7 +886,7 @@ paths:
           description: Data describing reward programs associated with accounts
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -927,11 +923,11 @@ paths:
           description: Reward program Id not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Reward program Id not found:
                   value:
@@ -939,16 +935,16 @@ paths:
                     message: Reward program Id not found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /reward-programs/{rewardProgramId}/categories:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getRewardProgramCategories
       tags:
@@ -957,14 +953,14 @@ paths:
       summary: Get reward categories
       parameters:
         - $ref: '#/components/parameters/RewardProgramIdPath'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: Data describing a reward program's categories
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -1012,11 +1008,11 @@ paths:
           description: Request is invalid
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Reward program Id not found:
                   value:
@@ -1029,11 +1025,11 @@ paths:
                     message: Categories not found for the reward program
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
 components:
 
@@ -1044,8 +1040,8 @@ components:
     #
     ############################################################
 
-    bearerAuth:
-      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/bearerAuth'
+    OAuthFapi1Advanced:
+      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Advanced'
 
   parameters:
     ############################################################
@@ -1067,7 +1063,7 @@ components:
       in: query
       description: End time for use in retrieval of elements (ISO 8601)
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+        $ref: './fdxapi.components.yaml#/components/schemas/DateString'
 
     ImageIdPath:
       name: imageId
@@ -1090,7 +1086,7 @@ components:
       in: query
       description: Start time for use in retrieval of elements (ISO 8601)
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+        $ref: './fdxapi.components.yaml#/components/schemas/DateString'
 
     StatementIdPath:
       name: statementId
@@ -1119,7 +1115,7 @@ components:
               description: >-
                 Long-term persistent identity of the parent account. This is
                 used to group accounts
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+              $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
             lineOfBusiness:
               description: >-
                 The line of business, such as consumer, consumer joint, small
@@ -1128,9 +1124,8 @@ components:
             routingTransitNumber:
               type: string
               description: >-
-                The routing transit number (RTN) associated with the account number at the owning institution.
-                This also serves as the 3-digit Institution (FID) and 5-digit Transit numbers for Canadian institutions,
-                including leading zeroes
+                Routing transit number (RTN) associated with
+                account number at owning institution
             balanceType:
               $ref: '#/components/schemas/BalanceType'
               description: >-
@@ -1146,7 +1141,7 @@ components:
               $ref: '#/components/schemas/InterestRateType'
               description: FIXED or VARIABLE
             interestRateAsOf:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: Date of account's interest rate
             priorInterestRate:
               type: number
@@ -1169,13 +1164,13 @@ components:
               $ref: '#/components/schemas/AccountBillPayStatus'
               description: Defines account's ability to participate in bill payments
             micrNumber:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/String64'
+              $ref: './fdxapi.components.yaml#/components/schemas/String64'
               description: MICR Number
             lastActivityDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Date that last transaction occurred on account
             rewardProgramId:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+              $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
               description: Long-term persistent identity of rewards program associated with this account
             transactionsIncluded:
               type: boolean
@@ -1185,7 +1180,7 @@ components:
                 account. This is an optimization that allows an FDX API server
                 to return transactions and account details in a single call
             domicile:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Domicile'
+              $ref: './fdxapi.components.yaml#/components/schemas/Domicile'
               description: The country and region of the account's legal jurisdiction
 
     AccountContact:
@@ -1193,7 +1188,7 @@ components:
       description: Contact information for the account
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/Contacts'
+        - $ref: './fdxapi.components.yaml#/components/schemas/Contacts'
         - type: object
           properties:
             holders:
@@ -1218,20 +1213,17 @@ components:
           description: >-
             Long-term persistent identity of the account, though not an account number.
             This identity must be unique to the owning institution
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
         error:
           description: Present if an error was encountered while retrieving this account
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+          $ref: './fdxapi.components.yaml#/components/schemas/Error'
         accountType:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/AccountType'
+          $ref: './fdxapi.components.yaml#/components/schemas/AccountType'
           description: Account type
         accountNumber:
           description: >-
-            Full account number for the end user for this account at the owning institution.
-            If not masked this is sensitive data which should only be exchanged if encrypted.
-            For detailed information on implementing encryption see "Part 4 End to End Encryption"
-            of the FDX API Security Model document in the Security section of the latest
-            FDX Release download
+            Full account number for the end user's handle for
+            the account at the owning institution
           type: string
         accountNumberDisplay:
           description: >-
@@ -1253,10 +1245,10 @@ components:
           type: string
           description: Description of account
         accountOpenDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Account opening date
         accountCloseDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Account closing date
         currency:
           $ref: '#/components/schemas/Currency'
@@ -1265,7 +1257,7 @@ components:
           type: array
           description: Array of Financial institution-specific attributes
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
 
     AccountHolder:
       title: Account Holder entity
@@ -1274,11 +1266,11 @@ components:
         relationship with an account
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/Customer'
+        - $ref: './fdxapi.components.yaml#/components/schemas/Customer'
         - type: object
           properties:
             relationship:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/AccountHolderRelationship'
+              $ref: './fdxapi.components.yaml#/components/schemas/AccountHolderRelationship'
               description: "Customer's relationship to the account"
 
     AccountPaymentNetwork:
@@ -1289,10 +1281,7 @@ components:
       properties:
         bankId:
           type: string
-          description: Bank identifier used by the payment network. Typically the 9-digit
-            routing transit number (RTN) associated with the account number at a US institution,
-            or the 3-digit Institution (FID) and 5-digit Transit numbers for Canadian institutions,
-            including leading zeroes
+          description: Bank identifier used by the payment network ie. Routing Number
         identifier:
           type: string
           description: >-
@@ -1324,7 +1313,7 @@ components:
       description: An optionally paginated array of payment networks supported by the account
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             paymentNetworks:
@@ -1338,7 +1327,7 @@ components:
       description: An optionally paginated array of accounts
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             accounts:
@@ -1346,7 +1335,7 @@ components:
               description: >-
                 An array of accounts with entity types dependent on the
                 account type (deposit, investment, loan, line of credit,
-                annuity, insurance, commercial, or digital wallet)
+                annuity, insurance, or commercial)
               items:
                 $ref: '#/components/schemas/AccountWithDetails'
 
@@ -1360,16 +1349,14 @@ components:
           ANNUITY_ACCOUNT: '#/components/schemas/AnnuityAccount'
           COMMERCIAL_ACCOUNT: '#/components/schemas/CommercialAccount'
           DEPOSIT_ACCOUNT: '#/components/schemas/DepositAccount'
-          DIGITAL_WALLET: '#/components/schemas/DigitalWallet'
           INSURANCE_ACCOUNT: '#/components/schemas/InsuranceAccount'
           INVESTMENT_ACCOUNT: '#/components/schemas/InvestmentAccount'
           LOAN_ACCOUNT: '#/components/schemas/LoanAccount'
           LOC_ACCOUNT: '#/components/schemas/LineOfCreditAccount'
-      anyOf:
+      oneOf:
         - $ref: '#/components/schemas/AnnuityAccount'
         - $ref: '#/components/schemas/CommercialAccount'
         - $ref: '#/components/schemas/DepositAccount'
-        - $ref: '#/components/schemas/DigitalWallet'
         - $ref: '#/components/schemas/InsuranceAccount'
         - $ref: '#/components/schemas/InvestmentAccount'
         - $ref: '#/components/schemas/LineOfCreditAccount'
@@ -1396,10 +1383,10 @@ components:
               $ref: '#/components/schemas/PayoutMode'
               description: Frequency of annuity payments
             payoutStartDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Date the payout starts
             payoutEndDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Date the payout ends
             numberModalPayouts:
               type: integer
@@ -1470,7 +1457,7 @@ components:
           type: number
           description: The minimum amount which is due
         dueDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: The date that the payment is due
         autoPayEnabled:
           type: boolean
@@ -1479,7 +1466,7 @@ components:
           type: number
           description: The amount of money the user has set to autopay this bill
         autoPayDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: The date the autopayment is set to trigger for this bill
         pastDueAmount:
           type: number
@@ -1490,14 +1477,14 @@ components:
           type: number
           description: The amount of the most recent payment
         lastPaymentDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: The date of most recent payment
         statementBalance:
           type: number
           description: >-
             The amount of the last statement.  The value is negative if the user owes money
         statementDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: The date the statement was issued
 
     CardArt:
@@ -1529,7 +1516,7 @@ components:
           properties:
             balanceAsOf:
               description: As-of date of balances
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
             openingLedgerBalance:
               type: number
               description: Opening ledger balance
@@ -1701,10 +1688,10 @@ components:
           type: number
           description: Currency rate between original and converted currency
         currencyCode:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Iso4217CurrencyCode'
+          $ref: './fdxapi.components.yaml#/components/schemas/Iso4217CurrencyCode'
           description: ISO 4217 currency code
         originalCurrencyCode:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Iso4217CurrencyCode'
+          $ref: './fdxapi.components.yaml#/components/schemas/Iso4217CurrencyCode'
           description: Original ISO 4217 currency code
 
     DebtSecurity:
@@ -1728,7 +1715,7 @@ components:
               type: number
               description: Bond coupon rate for next closest call date
             couponDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Maturity date for next coupon
             couponMatureFrequency:
               $ref: '#/components/schemas/CouponMatureFrequency'
@@ -1740,7 +1727,7 @@ components:
               type: number
               description: Yield to next call
             callDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Next call date
             callType:
               $ref: '#/components/schemas/CallType'
@@ -1749,7 +1736,7 @@ components:
               type: number
               description: Yield to maturity
             bondMaturityDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Bond maturity date
 
     DepositAccount:
@@ -1762,7 +1749,7 @@ components:
           properties:
             balanceAsOf:
               description: As-of date of balances
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
             currentBalance:
               type: number
               description: Balance of funds in account
@@ -1783,7 +1770,7 @@ components:
               description: Term of CD in months
             maturityDate:
               description: Maturity date for CDs
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             transactions:
               type: array
               description: Transactions on the deposit account
@@ -1805,61 +1792,11 @@ components:
                 BILLPAYMENT, FEE, DEPOSIT, ADJUSTMENT, INTEREST,
                 DIVIDEND, DIRECTDEPOSIT, ATMDEPOSIT, POSCREDIT
             payee:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/String255'
+              $ref: './fdxapi.components.yaml#/components/schemas/String255'
               description: Payee name
             checkNumber:
               type: integer
               description: Check number
-
-    DigitalWallet:
-      title: Digital Wallet account entity
-      description: Information for a digital wallet account
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Account'
-        - type: object
-          properties:
-            balanceAsOf:
-              description: As-of date of balances
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
-            currentBalance:
-              type: number
-              description: Balance of funds in account
-            openingDayBalance:
-              type: number
-              description: Day's opening fund balance
-            availableBalance:
-              type: number
-              description: Balance of funds available for use
-            annualPercentageYield:
-              type: number
-              description: Annual Percentage Yield
-            interestYtd:
-              type: number
-              description: YTD Interest
-            transactions:
-              type: array
-              description: Transactions on the digital wallet
-              items:
-                $ref: '#/components/schemas/DigitalWalletTransaction'
-
-    DigitalWalletTransaction:
-      title: Digital Wallet Transaction entity
-      description: A transaction on a digital wallet account
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Transaction'
-        - type: object
-          properties:
-            transactionType:
-              $ref: '#/components/schemas/DigitalWalletTransactionType'
-              description: >-
-                ADJUSTMENT, BILL_PAYMENT, CREDIT, DEBIT, DEPOSIT, DIRECT_DEPOSIT, DIVIDEND, FEE,
-                INTEREST, MERCHANT_PAYMENT, MERCHANT_REFUND, TRANSFER_IN, TRANSFER_OUT,
-                WITHDRAWAL
-            payee:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/String255'
-              description: Payee name
 
     FiPortion:
       title: FI Portion entity
@@ -1879,7 +1816,7 @@ components:
       type: object
       properties:
         holdingId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long term persistent identity of the holding
         securityIds:
           description: Unique identifiers for the security
@@ -1908,7 +1845,7 @@ components:
           type: string
           description: Ticker / Market symbol
         originalPurchaseDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date of original purchase
         purchasedPrice:
           type: number
@@ -1928,7 +1865,7 @@ components:
           type: number
           description: Change in current price compared to previous day's close
         currentUnitPriceDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Current unit price as of date
         units:
           type: number
@@ -1951,7 +1888,7 @@ components:
           type: number
           description: For CDs, bonds, and other rate based holdings
         expirationDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: For CDs, bonds, and other time-based holdings
         inv401kSource:
           $ref: '#/components/schemas/Inv401kSourceType'
@@ -1975,7 +1912,7 @@ components:
           type: array
           description: Array of FI-specific attributes
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
         taxLots:
           type: array
           description: Breakdown by tax lot
@@ -1996,7 +1933,7 @@ components:
               OTHER_SECURITY: '#/components/schemas/OtherSecurity'
               STOCK_SECURITY: '#/components/schemas/StockSecurity'
               SWEEP_SECURITY: '#/components/schemas/SweepSecurity'
-          anyOf:
+          oneOf:
             - $ref: '#/components/schemas/DebtSecurity'
             - $ref: '#/components/schemas/MutualFundSecurity'
             - $ref: '#/components/schemas/OptionSecurity'
@@ -2020,13 +1957,13 @@ components:
               description: The payment term for the premium
               $ref: '#/components/schemas/InsurancePremiumTerm'
             policyStartDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: The premium start date
             policyStatus:
               $ref: '#/components/schemas/PolicyStatus'
               description: The status of an insurance policy account
             policyEndDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: The premium end date
             policyCoverageAmount:
               type: number
@@ -2065,7 +2002,7 @@ components:
           properties:
             balanceAsOf:
               description: As-of date for balances
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
             allowedCheckWriting:
               type: boolean
               description: Check writing privileges
@@ -2171,7 +2108,7 @@ components:
           type: number
           description: Value of named balance
         balanceDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date as of this balance
         currency:
           $ref: '#/components/schemas/Currency'
@@ -2192,13 +2129,13 @@ components:
           type: number
           description: Initial loan balance amount
         loanStartDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Start date of the loan
         currentLoanBalance:
           type: number
           description: Current loan principal balance amount
         dateAsOf:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
           description: Date and time of current loan balance
         loanRate:
           type: number
@@ -2218,7 +2155,7 @@ components:
           type: integer
           description: Remaining number of loan payments
         loanMaturityDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Expected loan end date
         loanInterestToDate:
           type: number
@@ -2227,7 +2164,7 @@ components:
           type: number
           description: Total projected interest to be paid on this loan
         loanNextPaymentDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: The next payment date for the loan
 
     InvestmentTransaction:
@@ -2329,7 +2266,7 @@ components:
               type: number
               description: How much loan pre-payment is interest
             payrollDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: The date for the 401k transaction was obtained in payroll
             priorYearContrib:
               type: boolean
@@ -2387,7 +2324,7 @@ components:
               description: Full precision unit number, unlimited digits after decimal point
             settlementTimestamp:
               description: When the trade settled
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
 
     LineItem:
       title: Line Item entity
@@ -2404,7 +2341,7 @@ components:
           type: integer
           description: Check number
         memo:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/String255'
+          $ref: './fdxapi.components.yaml#/components/schemas/String255'
           description: Secondary item description
         reference:
           type: string
@@ -2417,7 +2354,7 @@ components:
           items:
             type: string
         links:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLinks'
+          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLinks'
           description: >-
             Links (unique to this Transaction) used to retrieve images of
             checks or transaction receipts, or invoke other APIs
@@ -2431,7 +2368,7 @@ components:
         - type: object
           properties:
             balanceAsOf:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: As-of date for balances
             creditLine:
               type: number
@@ -2443,7 +2380,7 @@ components:
               type: number
               description: Amount of next payment
             nextPaymentDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Due date of next payment
             principalBalance:
               type: number
@@ -2453,13 +2390,12 @@ components:
               description: Current balance of the line of credit
             minimumPaymentAmount:
               type: number
-              description: Minimum payment amount, which is due at the date
-                specified in `nextPaymentDate`
+              description: Minimum payment amount
             lastPaymentAmount:
               type: number
               description: Last payment amount
             lastPaymentDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Last payment date
             pastDueAmount:
               type: number
@@ -2468,7 +2404,7 @@ components:
               type: number
               description: Last Statement Balance
             lastStmtDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Last Statement Date
             purchasesApr:
               type: number
@@ -2512,7 +2448,7 @@ components:
               type: integer
               description: Check number
             paymentDetails:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/PaymentDetails'
+              $ref: './fdxapi.components.yaml#/components/schemas/PaymentDetails'
               description: Breakdown of payment details
 
     LoanAccount:
@@ -2524,7 +2460,7 @@ components:
         - type: object
           properties:
             balanceAsOf:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: As-of date for balances
             principalBalance:
               type: number
@@ -2536,7 +2472,7 @@ components:
               type: number
               description: Original principal of loan
             originatingDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Loan origination date
             loanTerm:
               type: integer
@@ -2548,7 +2484,7 @@ components:
               type: number
               description: Amount of next payment
             nextPaymentDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Date of next payment
             paymentFrequency:
               $ref: '#/components/schemas/PaymentFrequency'
@@ -2563,10 +2499,10 @@ components:
               type: number
               description: Last payment amount
             lastPaymentDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Last payment date
             maturityDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Maturity date
             interestPaidYearToDate:
               type: number
@@ -2589,7 +2525,7 @@ components:
               $ref: '#/components/schemas/LoanTransactionType'
               description: PAYMENT, FEE, ADJUSTMENT, INTEREST
             paymentDetails:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/PaymentDetails'
+              $ref: './fdxapi.components.yaml#/components/schemas/PaymentDetails'
               description: Breakdown of payment details
 
     MutualFundSecurity:
@@ -2619,7 +2555,7 @@ components:
               type: number
               description: Current yield reported as portion of the fund's assets
             yieldAsOfDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: As-of date for yield value
 
     OpenOrder:
@@ -2628,7 +2564,7 @@ components:
       type: object
       properties:
         orderId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long-term persistent identity of the order. Id for this order transaction
         securityId:
           type: string
@@ -2651,7 +2587,7 @@ components:
             Type of order. One of BUY, SELL, BUYTOCOVER, BUYTOOPEN, SELLTOCOVER,
             SELLTOOPEN,  SELLSHORT, SELLCLOSE
         orderDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Order date
         unitPrice:
           type: number
@@ -2696,7 +2632,7 @@ components:
               type: number
               description: Strike price / Unit price
             expireDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Expiration date of option
             sharesPerContract:
               type: number
@@ -2784,13 +2720,13 @@ components:
           type: string
           description: Form of payment
         asOfDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date benefit was calculated
         frequency:
           $ref: '#/components/schemas/PaymentFrequency'
           description: ANNUALLY, BIWEEKLY, DAILY, MONTHLY, SEMIANNUALLY, SEMIMONTHLY, WEEKLY
         startDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Assumed retirement date. As of date amount is payable
 
     Portion:
@@ -2835,14 +2771,14 @@ components:
           type: array
           description: Array of FI-specific attributes
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
 
     RewardCategories:
       title: Reward Categories entity
       description: An optionally paginated array of reward categories
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             rewardCategories:
@@ -2858,13 +2794,13 @@ components:
       type: object
       properties:
         rewardProgramId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long term persistent identity of the reward program
         categoryName:
           type: string
           description: Reward category name
         categoryId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long term persistent identity of the reward category
         multiplier:
           type: number
@@ -2877,7 +2813,7 @@ components:
           type: array
           description: Array of FI-specific attributes
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
 
     RewardMembership:
       title: Reward Program Membership entity
@@ -2888,13 +2824,13 @@ components:
           type: array
           description: accountIds associated to the reward program
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+            $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           uniqueItems: true
         customerId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long-term persistent identity of the associated Customer
         memberId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long term persistent identity of the program member
         memberNumber:
           type: string
@@ -2903,7 +2839,7 @@ components:
           type: string
           description: If the reward program is tiered, member's current tier
         businessOrConsumer:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/BusinessOrConsumer'
+          $ref: './fdxapi.components.yaml#/components/schemas/BusinessOrConsumer'
           description: BUSINESS or CONSUMER membership
         balances:
           type: array
@@ -2918,7 +2854,7 @@ components:
       type: object
       properties:
         rewardProgramId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long term persistent identity of the reward program
         programName:
           type: string
@@ -2935,14 +2871,14 @@ components:
           type: array
           description: Array of FI-specific attributes
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
 
     RewardPrograms:
       title: Reward Programs entity
       description: An optionally paginated array of reward programs
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             rewardPrograms:
@@ -2970,7 +2906,7 @@ components:
       type: object
       properties:
         id:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Security identifier
         idType:
           $ref: '#/components/schemas/SecurityIdType'
@@ -2982,19 +2918,19 @@ components:
       type: object
       properties:
         accountId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Corresponds to accountId in Account entity
         statementId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long-term persistent identity of the statement
         statementDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date of the statement
         description:
           type: string
           description: Description of statement
         links:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLinks'
+          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLinks'
           description: The links to retrieve this account statement, or to invoke other APIs
         status:
           $ref: '#/components/schemas/DocumentStatus'
@@ -3005,7 +2941,7 @@ components:
       description: A paginated array of account statements
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             statements:
@@ -3038,7 +2974,7 @@ components:
               type: number
               description: The current yield
             yieldAsOfDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Yield as-of date
 
     SweepSecurity:
@@ -3056,7 +2992,7 @@ components:
               type: number
               description: Balance of funds available for use
             balanceAsOf:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+              $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
               description: As-of date of balances
             checks:
               type: boolean
@@ -3068,7 +3004,7 @@ components:
       type: object
       properties:
         originalPurchaseDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Lot acquired date
         quantity:
           type: number
@@ -3102,34 +3038,33 @@ components:
           description: The entity type of the account of this Transaction
         accountId:
           description: Corresponds to AccountId in Account
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
         transactionId:
           description: Long term persistent identity of the transaction (unique to account)
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
         referenceTransactionId:
           description: >-
             For reverse postings, the identity of the transaction being
             reversed. For the correction transaction, the identity of the
             reversing post. For credit card posting transactions, the identity
             of the authorization transaction
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
         postedTimestamp:
           description: >-
             The date and time that the transaction was posted to the account. If
             not provided then TransactionTimestamp can be used as
             PostedTimeStamp
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
         transactionTimestamp:
           description: >-
             The date and time that the transaction was added to the server
             backend systems
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
         description:
           type: string
-          description: The description of the transaction, such as information about a merchant's
-            name or place of business in a manner that is user friendly and accessible to the customer
+          description: The description of the transaction
         memo:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/String255'
+          $ref: './fdxapi.components.yaml#/components/schemas/String255'
           description: Secondary transaction description
         debitCreditMemo:
           $ref: '#/components/schemas/DebitCreditMemo'
@@ -3139,8 +3074,7 @@ components:
           description: 'Transaction category, preferably MCC or SIC.'
         subCategory:
           type: string
-          description: Transaction category detail specifying the standard of the transaction category.
-            For example, "MCC"
+          description: Transaction category detail
         reference:
           type: string
           description: A tracking reference identifier
@@ -3154,7 +3088,7 @@ components:
           type: number
           description: The amount of money in the foreign currency
         foreignCurrency:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Iso4217CurrencyCode'
+          $ref: './fdxapi.components.yaml#/components/schemas/Iso4217CurrencyCode'
           description: The ISO 4217 code of the foreign currency
         imageIds:
           type: array
@@ -3175,9 +3109,9 @@ components:
           type: array
           description: Array of FI-specific attributes
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
         links:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLinks'
+          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLinks'
           description: >-
             Links (unique to this transaction) used to retrieve images of
             checks or transaction receipts
@@ -3188,7 +3122,7 @@ components:
       type: object
       properties:
         categoryId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: >-
             Long term persistent identity of the reward category.
             This ID is mapped to a category definition returned by calling
@@ -3205,13 +3139,13 @@ components:
       description: Optionally paginated array of transactions
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             transactions:
               description: >-
                 An array of transactions with entity type dependent on the account type
-                (commercial, deposit, insurance, investment, line of credit, loan or digital wallet)
+                (commercial, deposit, insurance, investment, line of credit or loan)
               type: array
               items:
                 discriminator:
@@ -3219,15 +3153,13 @@ components:
                   mapping:
                     COMMERCIAL_ACCOUNT: '#/components/schemas/CommercialTransaction'
                     DEPOSIT_ACCOUNT: '#/components/schemas/DepositTransaction'
-                    DIGITAL_WALLET: '#/components/schemas/DigitalWalletTransaction'
                     INSURANCE_ACCOUNT: '#/components/schemas/InsuranceTransaction'
                     INVESTMENT_ACCOUNT: '#/components/schemas/InvestmentTransaction'
                     LOAN_ACCOUNT: '#/components/schemas/LoanTransaction'
                     LOC_ACCOUNT: '#/components/schemas/LineOfCreditTransaction'
-                anyOf:
+                oneOf:
                   - $ref: '#/components/schemas/CommercialTransaction'
                   - $ref: '#/components/schemas/DepositTransaction'
-                  - $ref: '#/components/schemas/DigitalWalletTransaction'
                   - $ref: '#/components/schemas/InsuranceTransaction'
                   - $ref: '#/components/schemas/InvestmentTransaction'
                   - $ref: '#/components/schemas/LineOfCreditTransaction'
@@ -3251,7 +3183,7 @@ components:
       type: object
       properties:
         vestingDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Vesting date
         symbol:
           type: string
@@ -3310,7 +3242,6 @@ components:
         - ANNUITY_ACCOUNT
         - COMMERCIAL_ACCOUNT
         - DEPOSIT_ACCOUNT
-        - DIGITAL_WALLET
         - INSURANCE_ACCOUNT
         - INVESTMENT_ACCOUNT
         - LOAN_ACCOUNT
@@ -3442,26 +3373,6 @@ components:
         - POSCREDIT
         - POSDEBIT
         - TRANSFER
-        - WITHDRAWAL
-
-    DigitalWalletTransactionType:
-      title: Digital Wallet Transaction Type
-      description: The type of a digital wallet transaction
-      type: string
-      enum:
-        - ADJUSTMENT
-        - BILL_PAYMENT
-        - CREDIT
-        - DEBIT
-        - DEPOSIT
-        - DIRECT_DEPOSIT
-        - DIVIDEND
-        - FEE
-        - INTEREST
-        - MERCHANT_PAYMENT
-        - MERCHANT_REFUND
-        - TRANSFER_IN
-        - TRANSFER_OUT
         - WITHDRAWAL
 
     DocumentStatus:
@@ -3751,7 +3662,7 @@ components:
           | US_CHIPS | Clearinghouse Interbank Payments System |
           | US_FEDNOW | Federal Reserve Instant Payment System |
           | US_FEDWIRE | Fedwire Funds Service |
-          | US_RTP | US Real Time Payments System |
+          | US_RTP| US Real Time Payments System |
       type: string
       enum:
         - CA_ACSS
