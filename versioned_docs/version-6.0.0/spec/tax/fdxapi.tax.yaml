@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  version: '6.2.0'
-  title: FDX V6.2.0 US Tax API
-  description: Financial Data Exchange V6.2.0 US Tax API
+  version: '6.0.0'
+  title: FDX V6.0.0 US Tax API
+  description: Financial Data Exchange V6.0.0 US Tax API
   contact:
     name: Financial Data Exchange
     url: 'https://financialdataexchange.org/'
@@ -10,17 +10,9 @@ info:
   license:
     name: FDX API License Agreement (11-13-2019)
     url: 'https://financialdataexchange.org/common/Uploaded%20files/Policies/FDX%20API%20License%20Agreement-(11-13-2019).pdf'
-  x-server-configuration:
-    default-environment: production
-    default-server: USTax
-    environments:
-    - name: production
-      servers:
-      - name: USTax
-        url: 'https://financialdataexchange-prod.apigee.net/fdx-tax-api-v6.1.0'
 servers:
-  - url: 'https://financialdataexchange-prod.apigee.net/fdx-tax-api-v6.1.0'
-    description: Financial Data Exchange V6 US Tax API
+  - url: 'https://api.fi.com/fdx/v6'
+    description: Financial Data Exchange V6.0.0 US Tax API
 tags:
   - name: Submit Tax Forms
     description: Submit vendor-produced customer tax reporting documents and data to providers
@@ -36,8 +28,8 @@ paths:
   /tax-forms:
     parameters:
       - $ref: '#/components/parameters/AuthorizationHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: searchForTaxForms
       summary: Search tax forms
@@ -47,21 +39,22 @@ paths:
         - Tax Forms
       security:
         - TaxBasicAuth: []
-        - bearerAuth: []
+        - OAuthFapi1Advanced:
+            - fdx:customerpersonal:read
       parameters:
         - $ref: '#/components/parameters/AccountIdQuery'
         - $ref: '#/components/parameters/TaxYearQuery'
         - $ref: '#/components/parameters/TaxFormsQuery'
         - $ref: '#/components/parameters/AcceptHeader'
         - $ref: '#/components/parameters/TaxDataTypeQuery'
-        - $ref: '../components/fdxapi.components.yaml#/components/parameters/ResultTypeQuery'
+        - $ref: './fdxapi.components.yaml#/components/parameters/ResultTypeQuery'
       responses:
         '200':
           description: Array of all the tax document data and tax form
             images available for the customer matching search criteria
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/zip:
               schema:
@@ -72,7 +65,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TaxStatementList'
               examples:
-                ResultType lightweight Search Response with Forms 1099-DIV and 1099-INT:
+                Lightweight Search Response:
                   value:
                     statements:
                       - taxYear: 2020
@@ -101,62 +94,12 @@ paths:
                               taxFormDate: 2021-03-30
                               additionalInformation: FDX v6.0
                               taxFormType: Tax1099Int
-                ResultType details Search Response with Form 1098:
-                  value:
-                    statements:
-                      - taxYear: 2023
-                        taxStatementId: ID-09990111
-                        issuer:
-                          tin: 12-3456789
-                          partyType: BUSINESS
-                          businessName:
-                            name1: Financial Intelligence Associates
-                          address:
-                            line1: 12022 Sundown Valley Dr
-                            line2: Suite 230
-                            city: Reston
-                            region: VA
-                            postalCode: "20191"
-                            country: US
-                          phone:
-                            number: "8885551212"
-                        recipient:
-                          tin: xxx-xx-1234
-                          partyType: INDIVIDUAL
-                          individualName:
-                            first: Kris
-                            middle: Q
-                            last: Public
-                          address:
-                            line1: 1 Main St
-                            city: Melrose
-                            region: NY
-                            postalCode: "12121"
-                            country: US
-                        forms:
-                          - tax1098:
-                              taxYear: 2023
-                              taxFormId: ID-09990111-1098
-                              taxFormDate: 2024-02-15
-                              taxFormType: Tax1098
-                              mortgagedProperties: 9
-                              otherInformation: "10. Property tax: $10,017.00"
-                              accountNumber: 111-23456
-                              mortgageInterest: 1008
-                              outstandingPrincipal: 200900
-                              originationDate: 2022-03-10
-                              overpaidRefund: 4011
-                              mortgageInsurance: 5012
-                              pointsPaid: 6013
-                              isPropertyAddressSameAsBorrowerAddress: true
-                              acquisitionDate: 2022-11-15
-                              propertyTax: 10017
         '206':
           description: Partial Content success searching for customer Tax Data forms,
             some errors are being returned
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -192,11 +135,11 @@ paths:
           description: Request is invalid or parameter values are not supported
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Tax Year not Supported:
                   value:
@@ -217,11 +160,11 @@ paths:
           description: Tax Form not Found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Tax Form not Found:
                   value:
@@ -229,16 +172,16 @@ paths:
                     message: Tax Form not Found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '406':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/406'
+          $ref: './fdxapi.components.yaml#/components/responses/406'
         '409':
           description: Tax forms are not currently available for this account or this year
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Operation not supported by Closed account:
                   value:
@@ -251,11 +194,11 @@ paths:
                     message: Tax Forms not yet been made available
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     post:
       operationId: createTaxForm
       summary: Create tax form
@@ -263,7 +206,7 @@ paths:
       tags:
         - Submit Tax Forms
       security:
-        - bearerAuth: []
+        - OAuthFapi1Baseline: []
       requestBody:
         content:
           application/json:
@@ -275,7 +218,7 @@ paths:
           description: Created document for the tax data submitted
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -285,7 +228,7 @@ paths:
           description: Partial Content success creating customer tax document, some errors are being returned
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -295,11 +238,11 @@ paths:
           description: Tax Form type is not supported
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Tax Form type is not supported:
                   value:
@@ -317,18 +260,18 @@ paths:
                     message: Account ID is required
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
 
   /tax-forms/{taxFormId}:
     parameters:
       - $ref: '#/components/parameters/TaxFormIdPath'
       - $ref: '#/components/parameters/AuthorizationHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getTaxForm
       summary: Retrieve tax form
@@ -340,7 +283,8 @@ paths:
         - Tax Forms
       security:
         - TaxBasicAuth: []
-        - bearerAuth: []
+        - OAuthFapi1Advanced:
+            - fdx:customerpersonal:read
       parameters:
         - $ref: '#/components/parameters/AcceptHeader'
         - $ref: '#/components/parameters/TaxDataTypeQuery'
@@ -352,7 +296,7 @@ paths:
             and/or other reporting statements as delivered by providers
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/pdf:
               schema:
@@ -488,7 +432,7 @@ paths:
           description: Partial Content success retrieving a customer tax document, some errors are being returned
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -500,11 +444,11 @@ paths:
           description: Account ID is required for searching or validating authorization
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Tax Form not Found:
                   value:
@@ -515,11 +459,11 @@ paths:
           description: Tax Form for provided Tax Form ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Tax Form not Found:
                   value:
@@ -527,16 +471,16 @@ paths:
                     message: Tax Form not Found
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '406':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/406'
+          $ref: './fdxapi.components.yaml#/components/responses/406'
         '409':
           description: Tax forms are not currently available for this account or this year
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Account is Closed:
                   value:
@@ -549,11 +493,11 @@ paths:
                     message: Tax Forms not yet been made available
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
+          $ref: './fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
+          $ref: './fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
+          $ref: './fdxapi.components.yaml#/components/responses/503'
     put:
       operationId: updateTaxForm
       summary: Update tax form
@@ -561,7 +505,7 @@ paths:
       tags:
         - Submit Tax Forms
       security:
-        - bearerAuth: []
+        - OAuthFapi1Baseline: []
       requestBody:
         content:
           application/json:
@@ -598,12 +542,12 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
         '206':
           description: Partial Content success updating customer tax document, some errors are being returned
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -613,11 +557,11 @@ paths:
           description: Server does not support the content type uploaded
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+                $ref: './fdxapi.components.yaml#/components/schemas/Error'
 
 components:
 
@@ -628,8 +572,11 @@ components:
     #
     ############################################################
 
-    bearerAuth:
-      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/bearerAuth'
+    OAuthFapi1Baseline:
+      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
+
+    OAuthFapi1Advanced:
+      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Advanced'
 
     TaxBasicAuth:
       type: http
@@ -715,7 +662,7 @@ components:
       description: The unique ID for this tax form or tax statement
       required: true
       schema:
-        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
 
     TaxFormsQuery:
       name: taxForms
@@ -755,10 +702,10 @@ components:
           $ref: '#/components/schemas/TaxFormType'
         id:
           description: Confidential and unique identifier of the tax form
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
         passcode:
           description: Unique, randomized and restricted password for this document
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
 
     BasicAuthForQR:
       title: Basic Auth for QR
@@ -771,20 +718,10 @@ components:
         version:
           description: >-
             [Financial Data Exchange (FDX)](https://financialdataexchange.org/) schema version number (e.g. "V5.0").
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/FdxVersion'
+          $ref: './fdxapi.components.yaml#/components/schemas/FdxVersion'
         softwareId:
           description: The FDX registration ID of company or software generating this tax data
           type: string
-      examples:
-        Basic Auth for a large 1099-B:
-          value:
-            basicAuth:
-              taxYear: 2023
-              taxFormType: Tax1099B
-              id: 00677560089990B1
-              passcode: PK2Z-0QP-L6EF
-            version: V5.0
-            softwareId: OakTreeSecurities
 
     BusinessIncomeStatement:
       title: Business Income Statement
@@ -922,7 +859,6 @@ components:
       title: Gain or loss from cryptocurrency transaction
       description: Tax information for a single cryptocurrency transaction.
         If reported on Form 1099-B, use Tax1099B and SecurityDetail instead of this entity.
-      type: object
       properties:
         cryptocurrencyName:
           description: Cryptocurrency name (e.g. Bitcoin)
@@ -937,13 +873,13 @@ components:
           description: Description of property (1099-B box 1a)
           type: string
         dateAcquired:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date acquired (1099-B box 1b)
         variousDatesAcquired:
           type: boolean
           description: Acquired on various dates (1099-B box 1b)
         dateOfSale:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date sold or disposed (1099-B box 1c)
         salesPrice:
           description: Proceeds (not price per share, 1099-B box 1d)
@@ -954,6 +890,7 @@ components:
         longOrShort:
           $ref: '#/components/schemas/SaleTermType'
           description: LONG or SHORT (1099-B box 2)
+      type: object
 
     CryptocurrencyTaxStatement:
       title: Cryptocurrency Tax Statement list
@@ -976,7 +913,7 @@ components:
       properties:
         date:
           description: Date of amount. When used in 1098-Q, date of last payment in month
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
         description:
           description: Description of amount. When used in 1098-Q, may use MonthAbbreviation
           type: string
@@ -1309,7 +1246,7 @@ components:
               type: string
               description: Box 13j, Recipient's LOB code, if any
             dateOfBirth:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 13l, Recipient's date of birth
 
     HealthInsuranceCoverage:
@@ -1336,13 +1273,13 @@ components:
       type: object
       properties:
         name:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/IndividualName'
+          $ref: './fdxapi.components.yaml#/components/schemas/IndividualName'
           description: Name of responsible individual
         tin:
           description: Social security number or other TIN
           type: string
         dateOfBirth:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date of birth
         coveredAll12Months:
           type: boolean
@@ -1365,13 +1302,13 @@ components:
           description: Covered individual SSN
           type: string
         dateOfBirth:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Covered individual date of birth
         policyStartDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Coverage start date
         policyTerminationDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Coverage termination date
 
     LocalTaxWithholding:
@@ -1433,7 +1370,7 @@ components:
           properties:
             propertyAddress:
               description: Box 1a, Physical address of property (street, city, state, ZIP code)
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Address'
+              $ref: './fdxapi.components.yaml#/components/schemas/Address'
             rents:
               type: number
               description: Box 3, Rents received
@@ -1500,7 +1437,7 @@ components:
           properties:
             propertyAddress:
               description: Box 1a, Physical address of property (street, city, state, ZIP code)
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Address'
+              $ref: './fdxapi.components.yaml#/components/schemas/Address'
             royalties:
               type: number
               description: Box 3, Royalties received
@@ -1575,13 +1512,13 @@ components:
           description: Box 1a, Description of property
           type: string
         dateAcquired:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Box 1b, Date acquired
         variousDatesAcquired:
           type: boolean
           description: Box 1b, Date acquired Various
         dateOfSale:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Box 1c, Date sold or disposed
         salesPrice:
           description: Box 1d, Proceeds (not price per share)
@@ -1661,7 +1598,7 @@ components:
       properties:
         stateCode:
           description: State two-digit code
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/StateCode'
+          $ref: './fdxapi.components.yaml#/components/schemas/StateCode'
         state:
           description: Amount of state income tax withheld
           $ref: '#/components/schemas/StateTaxWithholding'
@@ -1696,15 +1633,15 @@ components:
           type: boolean
           description: True to indicate this is a corrected tax form
         accountId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long-term persistent identity of the source account. Not the account number
         taxFormId:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
           description: Long-term persistent id for this tax form.
             Depending upon the data provider, this may be the same id as the enclosing tax statement id,
             or this may be a different id, or this id may be omitted.
         taxFormDate:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
           description: Date of production or delivery of the tax form
         additionalInformation:
           description: Additional explanation text or content about this tax form
@@ -1755,9 +1692,9 @@ components:
               code: '2'
         error:
           description: Present if an error was encountered while retrieving this form
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
+          $ref: './fdxapi.components.yaml#/components/schemas/Error'
         links:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLinks'
+          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLinks'
           description: Links to retrieve this form as data or image, or to invoke other APIs
 
     Tax1041K1:
@@ -1776,16 +1713,16 @@ components:
               type: boolean
               description: Amended K-1
             fiscalYearBegin:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Fiscal year begin date
             fiscalYearEnd:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Fiscal year end date
             form1041T:
               type: boolean
               description: Box D, Check if Form 1041-T was filed
             date1041T:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box D, and enter the date it was filed
             final1041:
               type: boolean
@@ -1968,10 +1905,10 @@ components:
         - type: object
           properties:
             fiscalYearBegin:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Fiscal year begin date
             fiscalYearEnd:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Fiscal year end data
             finalK1:
               type: boolean
@@ -2039,41 +1976,28 @@ components:
               format: double
             decreaseDueToSaleOrExchange:
               type: boolean
-              deprecated: true
-              description: Box J, Check if decrease is due to sale or exchange of partnership interest.
-                Deprecated and no longer used beginning tax year 2023.
-                Use `decreaseDueToSale` and `decreaseDueToExchange` instead
-            decreaseDueToSale:
-              type: boolean
-              description: Box J, Check if decrease is due to sale of partnership interest
-            decreaseDueToExchange:
-              type: boolean
-              description: Box J, Check if decrease is due to exchange of partnership interest
+              description: Box J, Check if decrease is due to sale or exchange of partnership interest
             nonrecourseLiabilityShareBegin:
-              description: Box K1, Partner's share of liabilities - beginning - nonrecourse
+              description: Box K, Partner's share of liabilities - beginning - nonrecourse
               type: number
             nonrecourseLiabilityShareEnd:
-              description: Box K1, Partner's share of liabilities - ending - nonrecourse
+              description: Box K, Partner's share of liabilities - ending - nonrecourse
               type: number
             qualifiedLiabilityShareBegin:
-              description: Box K1, Partner's share of liabilities - beginning - qualified nonrecourse financing
+              description: Box K, Partner's share of liabilities - beginning - qualified nonrecourse financing
               type: number
             qualifiedLiabilityShareEnd:
-              description: Box K1, Partner's share of liabilities - ending - qualified nonrecourse financing
+              description: Box K, Partner's share of liabilities - ending - qualified nonrecourse financing
               type: number
             recourseLiabilityShareBegin:
-              description: Box K1, Partner's share of liabilities - beginning - recourse
+              description: Box K, Partner's share of liabilities - beginning - recourse
               type: number
             recourseLiabilityShareEnd:
-              description: Box K1, Partner's share of liabilities - ending - recourse
+              description: Box K, Partner's share of liabilities - ending - recourse
               type: number
             includesLowerTierLiability:
               type: boolean
-              description: Box K2, Check this box if item K1 includes liability amounts from lower tier partnerships
-            liabilitySubjectToGuarantees:
-              type: boolean
-              description: Box K3, Check if any of the above liability is subject to
-                guarantees or other payment obligations by the partner
+              description: Box K, Check this box if item K includes liability amounts from lower tier partnerships
             capitalAccountBegin:
               description: Box L, Partner's capital account analysis - Beginning capital account
               type: number
@@ -2223,7 +2147,7 @@ components:
               description: Box 3, Policy issuer's name
               type: string
             recipientDateOfBirth:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 6, Recipient's date of birth
             spouseName:
               description: Box 7, Recipient's spouse's name
@@ -2232,13 +2156,13 @@ components:
               description: Box 8, Recipient's spouse's SSN
               type: string
             spouseDateOfBirth:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 9, Recipient's spouse's date of birth
             policyStartDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 10, Policy start date
             policyTerminationDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 11, Policy termination date
             coveredIndividuals:
               description: Boxes 16+, Covered Individuals
@@ -2261,7 +2185,7 @@ components:
         - type: object
           properties:
             responsibleDateOfBirth:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 3, Date of birth (if SSN or other TIN is not available)
             originOfHealthCoverageCode:
               description: Box 8, Enter letter identifying Origin of the Health Coverage
@@ -2372,7 +2296,7 @@ components:
               description: Box 2, Outstanding mortgage principal
               type: number
             originationDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 3, Mortgage origination date
             overpaidRefund:
               description: Box 4, Refund of overpaid interest
@@ -2387,10 +2311,10 @@ components:
               type: boolean
               description: Box 7, Is address of property securing mortgage same as PAYER'S/BORROWER'S address
             acquisitionDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 11, Mortgage acquisition date
             propertyAddress:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/Address'
+              $ref: './fdxapi.components.yaml#/components/schemas/Address'
               description: Box 8, Address of property securing mortgage
             propertyTax:
               description: Box 10, Property tax
@@ -2410,7 +2334,7 @@ components:
         - type: object
           properties:
             dateOfContribution:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 1, Date of contribution
             odometerMileage:
               description: Box 2a, Odometer mileage
@@ -2434,7 +2358,7 @@ components:
               description: Box 4a, Donee certifies that vehicle was sold in arm's length transaction to
                 unrelated party
             dateOfSale:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 4b, Date of sale
             grossProceeds:
               description: Box 4c, Gross proceeds from sale (see instructions)
@@ -2539,7 +2463,7 @@ components:
               description: Box 1a, Annuity amount on start date
             startDate:
               description: Box 1b, Annuity start date
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             canBeAccelerated:
               type: boolean
               description: Box 2, Start date may be accelerated
@@ -2614,7 +2538,7 @@ components:
               description: Account number
               type: string
             dateOfAcquisition:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 1, Date of lender's acquisition or knowledge of abandonment
             principalBalance:
               description: Box 2, Balance of principal outstanding
@@ -2686,7 +2610,7 @@ components:
               description: Account number
               type: string
             dateOfEvent:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 1, Date of identifiable event
             amountDischarged:
               description: Box 2, Amount of debt discharged
@@ -2720,7 +2644,7 @@ components:
               description: Account number
               type: string
             dateOfSale:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 1, Date of sale or exchange
             aggregateAmount:
               description: Box 2, Aggregate amount received
@@ -3040,7 +2964,7 @@ components:
               description: PSE's name
               type: string
             psePhone:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/TelephoneNumberPlusExtension'
+              $ref: './fdxapi.components.yaml#/components/schemas/TelephoneNumberPlusExtension'
               description: PSE's phone number
             accountNumber:
               description: Account number
@@ -3091,7 +3015,7 @@ components:
               description: Box 1, Amount paid to payment recipient
             saleDate:
               description: Box 2, Date of sale
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             issuerName:
               type: string
               description: Issuer's name
@@ -3099,7 +3023,7 @@ components:
               description: Acquirer's information contact name, street address, city or town,
                 state or province, country, ZIP or foreign postal code, and telephone
                 no. (If different from ACQUIRER)
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/NameAddressPhone'
+              $ref: './fdxapi.components.yaml#/components/schemas/NameAddressPhone'
 
     Tax1099Ltc:
       title: Form 1099-LTC
@@ -3129,7 +3053,7 @@ components:
               description: INSURED'S taxpayer identification no.
               type: string
             insuredNameAddress:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/NameAddress'
+              $ref: './fdxapi.components.yaml#/components/schemas/NameAddress'
               description: Insured name and address
             qualifiedContract:
               type: boolean
@@ -3141,7 +3065,7 @@ components:
               type: boolean
               description: Box 5, Terminally ill
             dateCertified:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Date certified
 
     Tax1099Misc:
@@ -3510,7 +3434,7 @@ components:
               type: boolean
             dateOfPayment:
               description: Box 13, Date of payment
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             stateAndLocal:
               description: Boxes 14-19, State and Local tax withholding
               type: array
@@ -3530,7 +3454,7 @@ components:
               description: Account or escrow number
               type: string
             dateOfClosing:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 1, Date of closing
             grossProceeds:
               description: Box 2, Gross proceeds
@@ -3606,7 +3530,7 @@ components:
               description: Issuer's information contact name, street address, city or town, state
                 or province, country, ZIP or foreign postal code, and telephone no. (if
                 different from ISSUER)
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/NameAddressPhone'
+              $ref: './fdxapi.components.yaml#/components/schemas/NameAddressPhone'
 
     Tax1120SK1:
       title: Form 1120-S K-1
@@ -3624,10 +3548,10 @@ components:
               type: boolean
               description: Amended K-1
             fiscalYearBegin:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Fiscal year begin date
             fiscalYearEnd:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Fiscal year end date
             irsCenter:
               description: Box C, IRS Center where corporation filed return
@@ -3743,10 +3667,10 @@ components:
         - type: object
           properties:
             fiscalYearBegin:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Fiscal year begin date
             fiscalYearEnd:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Fiscal year end date
             undistributedLongTermCapitalGains:
               description: Box 1a, Total undistributed long-term capital gains
@@ -3778,10 +3702,10 @@ components:
               description: Account number
             optionGrantDate:
               description: Box 1, Date option granted
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             optionExerciseDate:
               description: Box 2, Date option exercised
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             exercisePrice:
               type: number
               description: Box 3, Exercise price per share
@@ -3811,10 +3735,10 @@ components:
               description: Account number
             optionGrantDate:
               description: Box 1, Date option granted
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             optionExerciseDate:
               description: Box 2, Date option exercised
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             grantMarketValue:
               type: number
               description: Box 3, Fair market value per share on grant date
@@ -3829,7 +3753,7 @@ components:
               description: Box 6, Number of shares transferred
             titleTransferDate:
               description: Box 7, Date legal title transferred
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
             grantDateExercisePrice:
               type: number
               description: Box 8, Exercise price per share determined as if the option
@@ -3897,7 +3821,7 @@ components:
               type: boolean
               description: Box 11, If checked, required minimum distribution for next year
             rmdDate:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 12a, RMD date
             rmdAmount:
               description: Box 12b, RMD amount
@@ -4196,66 +4120,17 @@ components:
             version:
               description: >-
                 [Financial Data Exchange (FDX)](https://financialdataexchange.org/) schema version number (e.g. "V5.0").
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/FdxVersion'
+              $ref: './fdxapi.components.yaml#/components/schemas/FdxVersion'
             softwareId:
               description: The FDX registration ID of company or software generating this tax data
               type: string
-      examples:
-        QR Code data for form 1098:
-          value:
-            version: V6.0.0
-            softwareId: FdxBankSoftware-2024
-            tax1098:
-              taxYear: 2023
-              taxFormId: ID-09990111-1098
-              taxFormDate: 2024-02-15
-              taxFormType: Tax1098
-              issuer:
-                tin: 12-3456789
-                partyType: BUSINESS
-                businessName:
-                  name1: Financial Intelligence Associates
-                address:
-                  line1: 12022 Sundown Valley Dr
-                  line2: Suite 230
-                  city: Reston
-                  region: VA
-                  postalCode: "20191"
-                  country: US
-                phone:
-                  number: "8885551212"
-              recipient:
-                tin: xxx-xx-1234
-                partyType: INDIVIDUAL
-                individualName:
-                  first: Kris
-                  middle: Q
-                  last: Public
-                address:
-                  line1: 1 Main St
-                  city: Melrose
-                  region: NY
-                  postalCode: "12121"
-                  country: US
-              mortgagedProperties: 9
-              otherInformation: "10. Property tax: $10,017.00"
-              accountNumber: 111-23456
-              mortgageInterest: 1008
-              outstandingPrincipal: 200900
-              originationDate: 2022-03-10
-              overpaidRefund: 4011
-              mortgageInsurance: 5012
-              pointsPaid: 6013
-              isPropertyAddressSameAsBorrowerAddress: true
-              acquisitionDate: 2022-11-15
-              propertyTax: 10017
 
     TaxFormAttribute:
       title: Tax Form Attribute
       description: An additional tax form attribute for use when a defined field is not available
       type: object
       allOf:
-        - $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+        - $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
         - type: object
           properties:
             boxNumber:
@@ -4279,16 +4154,16 @@ components:
           description: Type of issuer or recipient legal entity, as "BUSINESS" or "INDIVIDUAL".
             Commonly BUSINESS for issuer and INDIVIDUAL for recipient
         individualName:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/IndividualName'
+          $ref: './fdxapi.components.yaml#/components/schemas/IndividualName'
           description: Individual issuer or recipient name
         businessName:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/BusinessName'
+          $ref: './fdxapi.components.yaml#/components/schemas/BusinessName'
           description: Business issuer or recipient name
         address:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Address'
+          $ref: './fdxapi.components.yaml#/components/schemas/Address'
           description: Issuer or recipient address
         phone:
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/TelephoneNumberPlusExtension'
+          $ref: './fdxapi.components.yaml#/components/schemas/TelephoneNumberPlusExtension'
           description: Issuer or recipient telephone number
         email:
           description: Issuer or recipient email address.
@@ -4325,7 +4200,7 @@ components:
           description: Long-term persistent id for the tax statement.
             Depending upon the data provider, this may be the same id as the id on the enclosed tax form(s),
             or this may be a different id
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
         issuer:
           description: Issuer's name, address, phone, and TIN.
             Issuer data need only be transmittted on TaxStatement, 'JSON' data type
@@ -4355,7 +4230,7 @@ components:
           description: Additional tax statement attributes that the provider wishes to include
           type: array
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
 
     TaxStatementList:
       title: Tax Statement List
@@ -4458,7 +4333,7 @@ components:
               type: string
             previousEmployeeName:
               description: Box g, Employee's previously reported name
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/IndividualName'
+              $ref: './fdxapi.components.yaml#/components/schemas/IndividualName'
             originalW2:
               description: Boxes 1-20 of Previously reported Wage and Tax Statement
               $ref: '#/components/schemas/TaxW2'
@@ -4479,7 +4354,7 @@ components:
               description: Box 1, Reportable winnings
               type: number
             dateWon:
-              $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
+              $ref: './fdxapi.components.yaml#/components/schemas/DateString'
               description: Box 2, Date won
             typeOfWager:
               description: Box 3, Type of wager
