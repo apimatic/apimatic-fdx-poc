@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  version: '6.2.0'
-  title: FDX V6.2.0 Fraud API
-  description: Financial Data Exchange V6.2.0 Fraud API
+  version: '6.0.0'
+  title: FDX V6.0.0 Fraud API
+  description: Financial Data Exchange V6.0.0 Fraud API
   contact:
     name: Financial Data Exchange
     url: 'https://financialdataexchange.org/'
@@ -10,22 +10,14 @@ info:
   license:
     name: FDX API License Agreement (11-13-2019)
     url: 'https://financialdataexchange.org/common/Uploaded%20files/Policies/FDX%20API%20License%20Agreement-(11-13-2019).pdf'
-  x-server-configuration:
-    default-environment: production
-    default-server: Fraud
-    environments:
-    - name: production
-      servers:
-      - name: Fraud
-        url: 'https://financialdataexchange-prod.apigee.net/fdx-fraud-api-v6.2.0'
 servers:
-  - url: 'https://financialdataexchange-prod.apigee.net/fdx-fraud-api-v6.2.0'
-    description: Financial Data Exchange V6 Fraud API
+  - url: 'https://api.fi.com/fdx/v6'
+    description: Financial Data Exchange V6.0.0 Fraud API
 tags:
   - name: Fraud Notification
     description: Notify of suspected fraud
 security:
-  - bearerAuth: []
+  - OAuthFapi1Baseline: []
 paths:
   ############################################################
   #
@@ -35,8 +27,8 @@ paths:
 
   /fraud/suspected-incident:
     parameters:
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     post:
       summary: Notify Data Provider of fraud
       description: Notify Data Provider of suspected fraud
@@ -66,7 +58,7 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
 
 components:
 
@@ -77,8 +69,8 @@ components:
     #
     ############################################################
 
-    bearerAuth:
-      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/bearerAuth'
+    OAuthFapi1Baseline:
+      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
 
   schemas:
     ############################################################
@@ -120,10 +112,10 @@ components:
             provide additional structured context on the suspected fraud for the
             FI to use in determining a resolution
           items:
-            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
         reporter:
           description: >-
             Identity of the party responsible for identifying and reporting the
             suspected fraud. This might be the DP, DAP, a vendor, a payment
             network, or other entity
-          $ref: '../components/fdxapi.components.yaml#/components/schemas/Party'
+          $ref: './fdxapi.components.yaml#/components/schemas/Party'
