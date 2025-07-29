@@ -28,8 +28,8 @@ paths:
   /consents/{consentId}:
     parameters:
       - $ref: '#/components/parameters/ConsentIdPath'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       summary: Get Consent Grant
       description: Get a Consent Grant
