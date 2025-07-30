@@ -8,10 +8,13 @@ The FDX API v6.2 release introduces powerful new features, improved data coverag
 
 ## 🔎 What’s New in v6.2
 
-- Expanded support for consumer-directed data sharing under open banking frameworks
-- New `Tax`, `Payroll`, and `Business Account` data clusters
-- Streamlined consent and permissioning workflows
-- Additional error codes and extended metadata for improved developer experience
+- Adding "Prepaid" to the list of account types for Dodd-Frank 1033.
+- The addition of “Digital Wallet” accounts and transactions for wallet providers for Dodd-Frank
+1033.
+- Errata to add the new Zimbabwe ISO Currency Code (ZWG) and clarify a few entity
+descriptions
+- Security profiles for high and moderate risk FDX endpoints to the FDX Security Model
+document.
 
 You can view the full changelog [here](https://developer.financialdataexchange.org/changelog).
 
