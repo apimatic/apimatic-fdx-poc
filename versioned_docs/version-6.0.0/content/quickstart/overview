@@ -1,12 +1,31 @@
 # 🚀 Welcome to the FDX API v6.0 Quickstart
 
+The FDX API v6.0 release introduces powerful new features, improved data coverage, and enhanced security and consent capabilities. This quickstart will help you get up and running so you can explore the latest version using our interactive API reference.
+
+> ✅ **To try out API responses and run requests in the reference**, you'll need an access token. Follow our [Access Token Guide](#🔐-how-to-generate-an-fdx-api-access-token-first-time-setup) to get started.
+
+---
+
+## 🔎 What’s New in v6.0
+
+- Adding "Prepaid" to the list of account types for Dodd-Frank 1033.
+- The addition of “Digital Wallet” accounts and transactions for wallet providers for Dodd-Frank
+1033.
+- Errata to add the new Zimbabwe ISO Currency Code (ZWG) and clarify a few entity
+descriptions
+- Security profiles for high and moderate risk FDX endpoints to the FDX Security Model
+document.
+
+You can view the full changelog [here](https://developer.financialdataexchange.org/changelog).
+
+---
 
 ## 🧪 Try It Out: API Explorer
 
 To explore the API:
 
 1. Open the [FDX API Reference](https://developer.financialdataexchange.org/reference)
-2. Choose **v6.2** from the version selector
+2. Choose **v6.0** from the version selector
 3. Follow the [Access Token Guide](#🔐-how-to-generate-an-fdx-api-access-token-first-time-setup)
 4. Paste your token into the "Authorize" modal in the API Explorer
 5. Test real request/response pairs against our reference implementation
