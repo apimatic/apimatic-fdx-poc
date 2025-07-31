@@ -41,7 +41,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -122,8 +122,8 @@ paths:
   /consents/{consentId}/revocation:
     parameters:
       - $ref: '#/components/parameters/ConsentIdPath'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     put:
       summary: Revoke a Consent Grant
       description: Revoke a Consent Grant
@@ -142,7 +142,7 @@ paths:
           description: No Content
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
 
     get:
       summary: Retrieve Consent Revocation record
@@ -155,7 +155,7 @@ paths:
           description: Ok
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -171,7 +171,7 @@ components:
     ############################################################
 
     OAuthFapi1Baseline:
-      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
+      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
 
   parameters:
     ############################################################
@@ -203,7 +203,7 @@ components:
       properties:
         id:
           description: The persistent identifier of the consent
-          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
         status:
           description: The current status of the consent
           $ref: '#/components/schemas/ConsentGrantStatus'
@@ -214,16 +214,16 @@ components:
             $ref: '#/components/schemas/ConsentGrantParty'
         createdTime:
           description: When the consent was initially granted
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
         expirationTime:
           description: When the consent grant will become expired
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
         updatedTime:
           description: When the consent grant was updated
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
         durationType:
           description: The type of duration of the consent
-          $ref: './fdxapi.components.yaml#/components/schemas/ConsentDurationType'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/ConsentDurationType'
         durationPeriod:
           description: The consent duration in days from day of original grant
           $ref: '#/components/schemas/ConsentDurationPeriod'
@@ -239,7 +239,7 @@ components:
             $ref: '#/components/schemas/ConsentGrantResource'
         links:
           description: Links for related Consent Grant records
-          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLinks'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLinks'
 
     ConsentGrantParty:
       title: Consent Grant Party entity
@@ -250,7 +250,7 @@ components:
         Data Provider, and populated during issuance by Data Provider from its registry
       type: object
       allOf:
-        - $ref: './fdxapi.components.yaml#/components/schemas/Party'
+        - $ref: '../components/fdxapi.components.yaml#/components/schemas/Party'
       required:
         - homeUri
         - registry
@@ -267,7 +267,7 @@ components:
           $ref: '#/components/schemas/ConsentResourceType'
         resourceId:
           description: Identifier of resource to be permissioned
-          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
         dataClusters:
           description: Names of clusters of data elements permissioned
           type: array
@@ -289,7 +289,7 @@ components:
       properties:
         durationType:
           description: The type of duration of the consent
-          $ref: './fdxapi.components.yaml#/components/schemas/ConsentDurationType'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/ConsentDurationType'
         durationPeriod:
           description: The consent duration in days from day of original grant
           $ref: '#/components/schemas/ConsentDurationPeriod'
@@ -335,10 +335,10 @@ components:
           $ref: '#/components/schemas/ConsentUpdateReason'
         initiator:
           description: The party initiating consent revocation
-          $ref: './fdxapi.components.yaml#/components/schemas/PartyType'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/PartyType'
         updatedTime:
           description: When the consent grant was revoked
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
 
     ConsentRevocationList:
       title: Consent Revocation List entity
@@ -361,7 +361,7 @@ components:
           $ref: '#/components/schemas/ConsentUpdateReason'
         initiator:
           description: The party initiating revocation
-          $ref: './fdxapi.components.yaml#/components/schemas/PartyType'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/PartyType'
 
     FdxTokenIntrospectionResponse:
       title: OAuth token-introspection response for use with opaque 'access_tokens'
@@ -485,7 +485,7 @@ components:
     ConsentId:
       title: Consent Identifier
       description: Unique ID for a consent grant
-      $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+      $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
 
     ConsentResourceType:
       title: Consent Resource Type
