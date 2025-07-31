@@ -28,8 +28,8 @@ paths:
 
   /availability:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getAvailability
       tags:
@@ -43,7 +43,7 @@ paths:
           description: Status and planned times of API availability
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -51,8 +51,8 @@ paths:
 
   /capability:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getCapability
       tags:
@@ -62,7 +62,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/OperationIdQuery'
         - $ref: '#/components/parameters/FdxVersionQuery'
-        - $ref: './fdxapi.components.yaml#/components/parameters/ResultTypeQuery'
+        - $ref: '../components/fdxapi.components.yaml#/components/parameters/ResultTypeQuery'
       responses:
         '200':
           description: >-
@@ -70,7 +70,7 @@ paths:
             and product types
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -78,8 +78,8 @@ paths:
 
   /certification-metrics:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getCertificationMetrics
       tags:
@@ -93,7 +93,7 @@ paths:
           description: Array of API's certification metrics
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -109,7 +109,7 @@ components:
     ############################################################
 
     OAuthFapi1Baseline:
-      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
+      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
 
   parameters:
     ############################################################
@@ -124,7 +124,7 @@ components:
       description: Specific FDX version for which to get the capability. Optional
       required: false
       schema:
-        $ref: './fdxapi.components.yaml#/components/schemas/FdxVersion'
+        $ref: '../components/fdxapi.components.yaml#/components/schemas/FdxVersion'
 
     OperationIdQuery:
       name: operationId
@@ -181,7 +181,7 @@ components:
           type: array
           description: The FDX schema versions supported by one or more operations
           items:
-            $ref: './fdxapi.components.yaml#/components/schemas/FdxVersion'
+            $ref: '../components/fdxapi.components.yaml#/components/schemas/FdxVersion'
         allowedConnections:
           type: integer
           description: The number of concurrent connections allowed for this client
@@ -200,7 +200,7 @@ components:
           description: >-
             The URL to retrieve the JWKS public keys from the data provider,
             needed to enable payload level encryption above the TLS layer
-          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLink'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLink'
 
     CertificationMetric:
       title: Certification Metric entity
@@ -208,10 +208,10 @@ components:
       type: object
       properties:
         reportStartTimestamp:
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
           description: When the reported metrics period began
         reportEndTimestamp:
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
           description: When the reported metrics period ended
         metricsName:
           type: string
@@ -234,7 +234,7 @@ components:
             See the Certification Performance section that describes how this measurement
             will be calculated, defines the % of availability during the measurement
         reportTimestamp:
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
           description: Time when these performance and availability metrics were created
 
     CertificationMetrics:
@@ -275,17 +275,17 @@ components:
           description: FDX schema versions supported at this endpoint
           type: array
           items:
-            $ref: './fdxapi.components.yaml#/components/schemas/FdxVersion'
+            $ref: '../components/fdxapi.components.yaml#/components/schemas/FdxVersion'
         cutOffTime:
           description: >-
             Cut off time for same-day execution of activity request submitted to this API.
             Alternatively, the as-of time when EOD account balances are typically set
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
         link:
           description: >-
             General HATEOAS link for this API, specifying supported action (GET, POST, etc) and
             contentTypes (application/json, image/png, etc), but without any path parameter values
-          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLink'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLink'
 
     PlannedAvailability:
       title: Planned Availability entity
@@ -299,10 +299,10 @@ components:
           type: string
           description: Description of API availability status
         startTime:
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
           description: Start time for this status period
         endTime:
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
           description: End time for this status period
 
     ############################################################

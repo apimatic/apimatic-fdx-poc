@@ -27,8 +27,8 @@ paths:
 
   /fraud/suspected-incident:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     post:
       summary: Notify Data Provider of fraud
       description: Notify Data Provider of suspected fraud
@@ -58,7 +58,7 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
 
 components:
 
@@ -70,7 +70,7 @@ components:
     ############################################################
 
     OAuthFapi1Baseline:
-      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
+      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
 
   schemas:
     ############################################################
@@ -112,10 +112,10 @@ components:
             provide additional structured context on the suspected fraud for the
             FI to use in determining a resolution
           items:
-            $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
+            $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
         reporter:
           description: >-
             Identity of the party responsible for identifying and reporting the
             suspected fraud. This might be the DP, DAP, a vendor, a payment
             network, or other entity
-          $ref: './fdxapi.components.yaml#/components/schemas/Party'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Party'

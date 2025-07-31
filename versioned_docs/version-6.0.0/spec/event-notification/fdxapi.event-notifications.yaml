@@ -27,8 +27,8 @@ paths:
 
   /notification-subscriptions:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     post:
       summary: Create a notification subscription
       operationId: createNotificationSubscription
@@ -77,7 +77,7 @@ paths:
           description: Created
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -102,11 +102,11 @@ paths:
           description: Input sent by client does not satisfy API specification
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid Input:
                   value:
@@ -117,11 +117,11 @@ paths:
           description: Unauthorized to create a notification subscription
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Unauthorized:
                   value:
@@ -132,11 +132,11 @@ paths:
           description: Method Not Allowed
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Method Not Allowed:
                   value:
@@ -147,11 +147,11 @@ paths:
           description: Too Many Requests
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Too Many Requests:
                   value:
@@ -159,16 +159,16 @@ paths:
                     message: Too Many Requests
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: './fdxapi.components.yaml#/components/responses/500'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: './fdxapi.components.yaml#/components/responses/501'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: './fdxapi.components.yaml#/components/responses/503'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
 
   /notification-subscriptions/{subscriptionId}:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
       - $ref: '#/components/parameters/SubscriptionIdPath'
     get:
       summary: Get a notification subscription
@@ -181,7 +181,7 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -206,11 +206,11 @@ paths:
           description: Input sent by client does not satisfy API specification
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid Input:
                   value:
@@ -221,11 +221,11 @@ paths:
           description: Unauthorized to create a notification subscription
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Unauthorized:
                   value:
@@ -236,11 +236,11 @@ paths:
           description: Method Not Allowed
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Method Not Allowed:
                   value:
@@ -251,11 +251,11 @@ paths:
           description: Too Many Requests
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Too Many Requests:
                   value:
@@ -263,11 +263,11 @@ paths:
                     message: Too Many Requests
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: './fdxapi.components.yaml#/components/responses/500'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: './fdxapi.components.yaml#/components/responses/501'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: './fdxapi.components.yaml#/components/responses/503'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
 
     delete:
       summary: Delete a notification subscription
@@ -280,25 +280,25 @@ paths:
           description: No Content
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
         '400':
           description: Bad Request
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
         '401':
           description: Unauthorized to create a notification subscription
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Unauthorized:
                   value:
@@ -309,11 +309,11 @@ paths:
           description: Method Not Allowed
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Method Not Allowed:
                   value:
@@ -324,11 +324,11 @@ paths:
           description: Too Many Requests
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Too Many Requests:
                   value:
@@ -336,16 +336,16 @@ paths:
                     message: Too Many Requests
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: './fdxapi.components.yaml#/components/responses/500'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: './fdxapi.components.yaml#/components/responses/501'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: './fdxapi.components.yaml#/components/responses/503'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
 
   /notifications:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     post:
       summary: Publish a notification
       operationId: publishNotification
@@ -468,16 +468,16 @@ paths:
           description: No Content
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
         '405':
           description: Method Not Allowed
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Method Not Allowed:
                   value:
@@ -488,11 +488,11 @@ paths:
           description: Too Many Requests
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Too Many Requests:
                   value:
@@ -500,11 +500,11 @@ paths:
                     message: Too Many Requests
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: './fdxapi.components.yaml#/components/responses/500'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: './fdxapi.components.yaml#/components/responses/501'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: './fdxapi.components.yaml#/components/responses/503'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
     get:
       summary: Retrieve notifications for a Data Access Platform (DAP) or Data Recipient (DR)
       operationId: getNotifications
@@ -512,20 +512,20 @@ paths:
       tags:
         - Event Notifications
       parameters:
-        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
-        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
         - name: dataRecipientId
           in: query
           description: ID of Data Recipient (DR), omit for all DRs of a Data Access Platform
           required: false
           schema:
-            $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+            $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
       responses:
         '200':
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -569,11 +569,11 @@ paths:
           description: Method Not Allowed
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Method Not Allowed:
                   value:
@@ -584,11 +584,11 @@ paths:
           description: Too Many Requests
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Too Many Requests:
                   value:
@@ -596,11 +596,11 @@ paths:
                     message: Too Many Requests
                     debugMessage: Provider custom developer-level error details for troubleshooting
         '500':
-          $ref: './fdxapi.components.yaml#/components/responses/500'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: './fdxapi.components.yaml#/components/responses/501'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: './fdxapi.components.yaml#/components/responses/503'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
 
 components:
 
@@ -612,7 +612,7 @@ components:
     ############################################################
 
     OAuthFapi1Baseline:
-      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
+      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
 
   parameters:
     ############################################################
@@ -627,7 +627,7 @@ components:
       description: ID of notification subscription
       required: true
       schema:
-        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
 
   schemas:
     ############################################################
@@ -649,7 +649,7 @@ components:
           $ref: '#/components/schemas/NotificationType'
           description: Type of notification
         sentOn:
-          $ref: './fdxapi.components.yaml#/components/schemas/Timestamp'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Timestamp'
           description: Time notification was sent
         category:
           $ref: '#/components/schemas/NotificationCategory'
@@ -661,16 +661,16 @@ components:
           $ref: '#/components/schemas/NotificationPriority'
           description: Notification priority
         publisher:
-          $ref: './fdxapi.components.yaml#/components/schemas/Party'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Party'
           description: Publisher of notification
         subscriber:
-          $ref: './fdxapi.components.yaml#/components/schemas/Party'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Party'
           description: Subscriber to this notification
         notificationPayload:
           $ref: '#/components/schemas/NotificationPayload'
           description: Notification-specific key-value paired data
         url:
-          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLink'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLink'
           description: URL to retrieve further details related to notification
       required:
         - notificationId
@@ -692,7 +692,7 @@ components:
           $ref: '#/components/schemas/NotificationPayloadIdType'
           description: Type of entity causing origination of the notification with the given ID
         customFields:
-          $ref: './fdxapi.components.yaml#/components/schemas/FiAttribute'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/FiAttribute'
           description: Custom key-value pairs for a notification
 
     Notifications:
@@ -700,7 +700,7 @@ components:
       description: A paginated array of Notifications
       type: object
       allOf:
-        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             notifications:
@@ -724,10 +724,10 @@ components:
           type: string
           description: Callback URL. Previous callback URL will be updated with latest.
         subscriber:
-          $ref: './fdxapi.components.yaml#/components/schemas/Party'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Party'
           description: The Party who is subscribing to the notification
         effectiveDate:
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
           description: Effective date of notification
         subscriptionId:
           type: string

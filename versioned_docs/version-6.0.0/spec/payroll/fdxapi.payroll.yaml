@@ -26,8 +26,8 @@ paths:
 
   /payroll/reports:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getPayrollReports
       tags:
@@ -35,14 +35,14 @@ paths:
       description: Search for the employee's latest payroll report
       summary: Search for a payroll report
       parameters:
-        - $ref: './fdxapi.components.yaml#/components/parameters/ResultTypeQuery'
+        - $ref: '../components/fdxapi.components.yaml#/components/parameters/ResultTypeQuery'
         - $ref: '#/components/parameters/ReportTypeQuery'
       responses:
         '200':
           description: List of payroll reports available
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -51,11 +51,11 @@ paths:
           description: Input sent by client does not satisfy API specification
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid Input:
                   value:
@@ -66,11 +66,11 @@ paths:
           description: Payroll Reports not found
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Payroll Reports not found:
                   value:
@@ -78,17 +78,17 @@ paths:
                     message: Matching payroll reports were not found
                     debugMessage: Custom developer-level error details for troubleshooting
         '500':
-          $ref: './fdxapi.components.yaml#/components/responses/500'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: './fdxapi.components.yaml#/components/responses/501'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: './fdxapi.components.yaml#/components/responses/503'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
 
   /payroll/reports/{reportId}:
     parameters:
       - $ref: '#/components/parameters/ReportIdPath'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       operationId: getPayrollReport
       tags:
@@ -100,7 +100,7 @@ paths:
           description: Details of the specific payroll report
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -109,11 +109,11 @@ paths:
           description: Required input data not sent
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Invalid Input:
                   value:
@@ -124,11 +124,11 @@ paths:
           description: Payroll Report with provided ID was not found
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
-                $ref: './fdxapi.components.yaml#/components/schemas/Error'
+                $ref: '../components/fdxapi.components.yaml#/components/schemas/Error'
               examples:
                 Resource not found:
                   value:
@@ -136,11 +136,11 @@ paths:
                     message: Payroll Report not found
                     debugMessage: Custom developer-level error details for troubleshooting
         '500':
-          $ref: './fdxapi.components.yaml#/components/responses/500'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/500'
         '501':
-          $ref: './fdxapi.components.yaml#/components/responses/501'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/501'
         '503':
-          $ref: './fdxapi.components.yaml#/components/responses/503'
+          $ref: '../components/fdxapi.components.yaml#/components/responses/503'
 
 components:
 
@@ -152,7 +152,7 @@ components:
     ############################################################
 
     OAuthFapi1Advanced:
-      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Advanced'
+      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Advanced'
 
   parameters:
     ############################################################
@@ -167,7 +167,7 @@ components:
       description: Specific reportId to retrieve
       required: true
       schema:
-        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
 
     ReportTypeQuery:
       name: reportType
@@ -192,7 +192,7 @@ components:
       properties:
         rate:
           description: The amount and currency of the base pay rate of employee
-          $ref: './fdxapi.components.yaml#/components/schemas/MonetaryAmount'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/MonetaryAmount'
         rateType:
           description: Whether the worker's rate is ANNUAL, DAILY, HOURLY, OTHER
           $ref: '#/components/schemas/PayrollRateType'
@@ -205,15 +205,15 @@ components:
       description: Represents an employee
       type: object
       allOf:
-        - $ref: './fdxapi.components.yaml#/components/schemas/Person'
+        - $ref: '../components/fdxapi.components.yaml#/components/schemas/Person'
         - type: object
           properties:
             employeeId:
               description: Provider's long-term persistent id for the employee
-              $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+              $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
             name:
               description: Employee's full name
-              $ref: './fdxapi.components.yaml#/components/schemas/IndividualName'
+              $ref: '../components/fdxapi.components.yaml#/components/schemas/IndividualName'
       required:
         - name
 
@@ -224,10 +224,10 @@ components:
       properties:
         employerId:
           description: Provider's long-term persistent id for the employer
-          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
         name:
           description: The employer's name
-          $ref: './fdxapi.components.yaml#/components/schemas/BusinessName'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/BusinessName'
         dbas:
           description: Array of Doing Business As names for this employer
           type: array
@@ -238,10 +238,10 @@ components:
           type: string
         taxIdCountry:
           description: Country originating the employer's taxId element
-          $ref: './fdxapi.components.yaml#/components/schemas/Iso3166CountryCode'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Iso3166CountryCode'
         contacts:
           description: Employer's various contact information
-          $ref: './fdxapi.components.yaml#/components/schemas/Contacts'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Contacts'
       required:
         - name
 
@@ -258,13 +258,13 @@ components:
           type: string
         originalHireDate:
           description: The date when employee joined for the first time.
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         mostRecentHireDate:
           description: The date when employee re-joined most recently.
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         endDate:
           description: The employment end date
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         status:
           description: The employee's employment status, ACTIVE or INACTIVE
           $ref: '#/components/schemas/ActiveStatus'
@@ -286,19 +286,19 @@ components:
       properties:
         total:
           description: Total gross pay for covered period
-          $ref: './fdxapi.components.yaml#/components/schemas/MonetaryAmount'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/MonetaryAmount'
         base:
           description: Base pay part of Gross pay for covered period
-          $ref: './fdxapi.components.yaml#/components/schemas/MonetaryAmount'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/MonetaryAmount'
         bonus:
           description: Bonus pay for covered period
-          $ref: './fdxapi.components.yaml#/components/schemas/MonetaryAmount'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/MonetaryAmount'
         commission:
           description: Commission for covered period
-          $ref: './fdxapi.components.yaml#/components/schemas/MonetaryAmount'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/MonetaryAmount'
         overtime:
           description: Overtime pay for covered period
-          $ref: './fdxapi.components.yaml#/components/schemas/MonetaryAmount'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/MonetaryAmount'
         otherEarnings:
           description: Other earnings received in covered period
           type: array
@@ -321,10 +321,10 @@ components:
           $ref: '#/components/schemas/PayrollFrequency'
         latestPayDate:
           description: The date of employee's most recent pay
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         latestPayPeriodEndDate:
           description: The end date of employee's most recent pay period
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         annualPay:
           description: Year-to-date pay for current year and total annual pay for previous years
           $ref: '#/components/schemas/PaymentAmounts'
@@ -336,7 +336,7 @@ components:
       description: A monetary amount with its source name and its currency code
       type: object
       allOf:
-        - $ref: './fdxapi.components.yaml#/components/schemas/MonetaryAmount'
+        - $ref: '../components/fdxapi.components.yaml#/components/schemas/MonetaryAmount'
         - type: object
           properties:
             name:
@@ -356,7 +356,7 @@ components:
           $ref: '#/components/schemas/GrossPay'
         netPay:
           description: Net pay for covered period
-          $ref: './fdxapi.components.yaml#/components/schemas/MonetaryAmount'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/MonetaryAmount'
       required:
         - year
         - grossPay
@@ -368,16 +368,16 @@ components:
       properties:
         reportId:
           description: The report identification number
-          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
         reportType:
           description: The type of report
           $ref: '#/components/schemas/PayrollReportType'
         generationDate:
           description: The generation date of the report
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         dataAsOf:
           description: The data in the report is as of this date.
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         employee:
           description: The employee
           $ref: '#/components/schemas/Employee'
@@ -392,7 +392,7 @@ components:
           items:
             $ref: '#/components/schemas/Income'
         links:
-          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLinks'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLinks'
           description: Links to retrieve this payroll report, or to invoke related APIs
       required:
         - reportId
@@ -424,30 +424,30 @@ components:
       properties:
         reportId:
           description: The report identification number
-          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
         reportType:
           description: The type of report
           $ref: '#/components/schemas/PayrollReportType'
         generationDate:
           description: The generation date of the report
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         dataAsOf:
           description: The data in the report is as of this date.
-          $ref: './fdxapi.components.yaml#/components/schemas/DateString'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/DateString'
         employeeId:
           description: Provider's long-term persistent id for the employee
-          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
         employeeName:
           description: Employee's full name
-          $ref: './fdxapi.components.yaml#/components/schemas/IndividualName'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/IndividualName'
         employerId:
           description: The employer for this report
-          $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
         employerName:
           description: The employer's name
-          $ref: './fdxapi.components.yaml#/components/schemas/BusinessName'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/BusinessName'
         links:
-          $ref: './fdxapi.components.yaml#/components/schemas/HateoasLinks'
+          $ref: '../components/fdxapi.components.yaml#/components/schemas/HateoasLinks'
           description: Links to retrieve this payroll report, or to invoke related APIs
       required:
         - reportId

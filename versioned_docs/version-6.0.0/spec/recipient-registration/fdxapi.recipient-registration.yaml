@@ -27,8 +27,8 @@ paths:
 
   /register:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     post:
       summary: Recipient Registration Request
       description: Request to Register Recipient by Creating a Recipient Record
@@ -39,7 +39,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './fdxapi.components.yaml#/components/schemas/RecipientRequest'
+              $ref: '../components/fdxapi.components.yaml#/components/schemas/RecipientRequest'
             examples:
               Create Recipient Record at Provider:
                 value:
@@ -86,7 +86,7 @@ paths:
           description: Created
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -143,8 +143,8 @@ paths:
 
   /register/{clientId}:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
       - $ref: '#/components/parameters/ClientIdPath'
     get:
       summary: Get Recipient
@@ -157,7 +157,7 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -172,13 +172,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './fdxapi.components.yaml#/components/schemas/RecipientRequest'
+              $ref: '../components/fdxapi.components.yaml#/components/schemas/RecipientRequest'
       responses:
         '200':
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -194,7 +194,7 @@ paths:
           description: No Content
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
 
 components:
 
@@ -206,7 +206,7 @@ components:
     ############################################################
 
     OAuthFapi1Baseline:
-      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
+      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
 
   parameters:
     ############################################################
@@ -221,7 +221,7 @@ components:
       description: Client Identifier. Uniquely identifies a Client
       required: true
       schema:
-        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
 
   schemas:
     ############################################################
@@ -235,7 +235,7 @@ components:
       type: object
       description: Record of Recipient at the Provider in snake case to match IETF RFC 7591 naming formats
       allOf:
-        - $ref: './fdxapi.components.yaml#/components/schemas/RecipientRequest'
+        - $ref: '../components/fdxapi.components.yaml#/components/schemas/RecipientRequest'
         - type: object
           properties:
             client_id:

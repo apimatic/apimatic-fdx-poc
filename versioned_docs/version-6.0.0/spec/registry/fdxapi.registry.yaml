@@ -28,8 +28,8 @@ paths:
 
   /recipients:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       summary: Get Recipients
       operationId: getRegistryRecipients
@@ -37,14 +37,14 @@ paths:
       tags:
         - Recipients
       parameters:
-        - $ref: './fdxapi.components.yaml#/components/parameters/OffsetQuery'
-        - $ref: './fdxapi.components.yaml#/components/parameters/LimitQuery'
+        - $ref: '../components/fdxapi.components.yaml#/components/parameters/OffsetQuery'
+        - $ref: '../components/fdxapi.components.yaml#/components/parameters/LimitQuery'
       responses:
         '200':
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -101,8 +101,8 @@ paths:
 
   /recipients/{recipientId}:
     parameters:
-      - $ref: './fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
-      - $ref: './fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FapiInteractionIdHeader'
+      - $ref: '../components/fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHeader'
     get:
       summary: Get Recipient by Id
       operationId: getRegistryRecipient
@@ -116,7 +116,7 @@ paths:
           description: OK
           headers:
             x-fapi-interaction-id:
-              $ref: './fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
+              $ref: '../components/fdxapi.components.yaml#/components/headers/x-fapi-interaction-id'
           content:
             application/json:
               schema:
@@ -153,7 +153,7 @@ components:
     ############################################################
 
     OAuthFapi1Baseline:
-      $ref: './fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
+      $ref: '../components/fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1Baseline'
 
   parameters:
     ############################################################
@@ -168,7 +168,7 @@ components:
       description: Recipient Identifier. Uniquely identifies a Recipient
       required: true
       schema:
-        $ref: './fdxapi.components.yaml#/components/schemas/Identifier'
+        $ref: '../components/fdxapi.components.yaml#/components/schemas/Identifier'
 
   schemas:
     ############################################################
@@ -185,7 +185,7 @@ components:
         Properties in this structure use 'snake_case' names to match
         the properties in [IETF RFC 7591](https://datatracker.ietf.org/doc/rfc7591/).
       allOf:
-        - $ref: './fdxapi.components.yaml#/components/schemas/RecipientRequest'
+        - $ref: '../components/fdxapi.components.yaml#/components/schemas/RecipientRequest'
         - type: object
           properties:
             recipient_id:
@@ -202,7 +202,7 @@ components:
         Properties in this structure use 'snake_case' names to match
         the properties in [IETF RFC 7591](https://datatracker.ietf.org/doc/rfc7591/).
       allOf:
-        - $ref: './fdxapi.components.yaml#/components/schemas/PaginatedArray'
+        - $ref: '../components/fdxapi.components.yaml#/components/schemas/PaginatedArray'
         - type: object
           properties:
             recipients:
