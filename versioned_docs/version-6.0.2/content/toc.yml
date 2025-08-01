@@ -29,3 +29,5 @@ toc:
         from: models
   - page: Changelog
     file: changelog
+  - page: Migration Guide
+    file: v6.0-api-migration-guide
