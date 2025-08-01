@@ -1,0 +1,2786 @@
+FDX API V6.0
+
+Migration Guide
+
+Version 1.
+
+December 2023
+
+
+Legal Notice
+
+Financial Data Exchange, LLC (FDX) is a standards body and adopts this FDX API v6.0 Migration
+
+Guide for general use among industry stakeholders. Many of the terms, however, are subject to
+
+additional interpretations under prevailing laws, industry norms, and/or governmental
+
+regulations. While referencing certain laws that may be applicable, readers, users, members, or
+
+any other parties should seek legal advice of counsel relating to their particular practices and
+
+applicable laws in the jurisdictions where they do business. See FDX’s complete Legal
+
+Disclaimer located at [http://www.financialdataexchange.org](http://www.financialdataexchange.org) for other applicable disclaimers.
+
+Revision History
+
+```
+Document Version Notes Date
+```
+```
+1.0 Initial Document Release December 2023
+```
+
+## Contents
+
+- INTRODUCTION
+   - UPGRADING FOR CORE STRUCTURE CHANGES, RFC
+   - ADDING PARAMETER AND RESPONSE HEADERS PREVIOUSLY SPECIFIED BUT NOW DEFINED IN YAML, RFC
+   - UPGRADING FOR DEPRECATED ELEMENT REMOVALS, RFC
+   - STANDARDIZING API RESPONSE AS SCHEMA OBJECT (RATHER THAN ARRAY), RFC
+   - COMMON PROPERTY NAME REFACTORINGS, RFC
+   - NEW SECURITYSCHEMES DEFINITIONS, RFC
+   - RESTRUCTURED TAX API: EXPLICIT TAXSTATEMENT LEVEL, SHARED ISSUER, RECIPIENT ENTITIES, RFC
+
+
+## INTRODUCTION
+
+V6.0 is a major release containing breaking changes from earlier releases. There are specific changes from prior versions of which
+
+implementors should be aware. This document specifies where breaking changes have occurred from previous releases.
+
+**Note** : This document is best viewed online in FDX’s Confluence, which is only available to FDX members. Links contained in this PDF
+
+version will not function without FDX Confluence access.
+
+New Enums
+
+RFC 0236 Extend Fraud Notification Payload Data Structure
+
+This contains a breaking change by adding a new enum value ‘RISK’ in NotificationType.
+
+RFC 0266 Add US_FEDNOW, and RequestForPayments to Payments Network
+
+This contains a breaking change by adding a new enum value ‘US_FEDNOW’ in PaymentNetworkType.
+
+
+Accounts, Transactions and Securities entity hierarchies
+
+See Upgrading for Core structure changes, RFC 0232
+
+from DRAFT 0232 - Add discriminators to AccountDescriptor and Transaction (AccountCategory) and Security (SecurityCategory)
+
+In AccountWithDetails removing the seven xxxAccount: properties and requiring discriminator value accountCategory: on
+
+each account type, one of ANNUITY_ACCOUNT, COMMERCIAL_ACCOUNT, DEPOSIT_ACCOUNT,
+
+INSURANCE_ACCOUNT, INVESTMENT_ACCOUNT, LOAN_ACCOUNT or LOC_ACCOUNT. These values have not
+
+changed since prior versions v5.2 and v5.3.
+
+In Transactions removing the six xxxTransaction: properties and requiring discriminator value accountCategory: on each
+
+transaction type. The property accountCategory and its use on Transaction types is new.
+
+In Holding removing the six xxxSecurity: properties and requiring discriminator value securityCategory: on each security
+
+type, one of DEBT_SECURITY, MUTUAL_FUND_SECURITY, OPTION_SECURITY, OTHER_SECURITY,
+
+STOCK_SECURITY, or SWEEP_SECURITY. The property securityCategory and its use on Security types is new. Also new is
+
+the Security schema entity from which all security types now inherit.
+
+
+New header elements
+
+See https://fdx.atlassian.net/wiki/spaces/FDX/pages/2645295105/FDX+API+v6.0+Migration+Guide#Adding-parameter-and-
+
+response-headers-previously-specified-but-now-defined-in-yaml%2C-RFC-0269 ,
+
+from DRAFT 0269 - Add definitions of FDX-API-Actor-Type header to API requests and x-fapi-interaction-id header to all API
+
+requests and responses
+
+Explicitly added to the FDX API schemas are three request / response headers previously defined only in the FDX API Specification
+
+document. The request / response header x-fapi-interaction-id is required on all requests and responses.
+
+Deprecated elements, entities and an API endpoint
+
+See https://fdx.atlassian.net/wiki/spaces/FDX/pages/2645295105/FDX+API+v6.0+Migration+Guide#Upgrading-for-deprecated-
+
+element-removals%2C-RFC-0268 ,
+
+from DRAFT 0268 - Remove deprecations and obsolete markup for v6.
+
+Removal of many past deprecated properties to be replaced by other current properties, especially in Core.
+
+Remove of obsolete and deprecated properties for multiple IRS forms in Tax.
+
+Removal of one deprecated API in Money Movement to be replaced by another existing API.
+
+
+Standardizing response as object wrapping array
+
+See https://fdx.atlassian.net/wiki/spaces/FDX/pages/2645295105/FDX+API+v6.0+Migration+Guide#Standardizing-API-response-
+
+as-schema-object-(rather-than-array)%2C-RFC-0278 ,
+
+from DRAFT 0278 - v6.0 consistency cleanup to match Style Guide
+
+Wrapping one API response with schema object (rather than direct array) in Consent.
+
+Also additional limited impact:
+
+Update operationId of /recurring-payments/{recurringPaymentId}/payments from paymentsForRecurringPayment to
+
+getPaymentsForRecurringPayment.
+
+Refactoring common property names for consistency
+
+See https://fdx.atlassian.net/wiki/spaces/FDX/pages/2645295105/FDX+API+v6.0+Migration+Guide#Common-property-name-
+
+refactorings%2C-RFC- 0282
+
+from DRAFT 0282 - Updates for Consistent Property Naming for FDX API v6.
+
+SecuritySchemes added for non-consumer APIs
+
+See https://fdx.atlassian.net/wiki/spaces/FDX/pages/2645295105/FDX+API+v6.0+Migration+Guide#New-securitySchemes-
+
+definitions%2C-RFC- 0276
+
+from DRAFT 0276 - Endpoint Authorization per FDX Security Profile using SecuritySchemes
+
+
+Tax API redesign for compound statements
+
+```
+See https://fdx.atlassian.net/wiki/spaces/FDX/pages/2645295105/FDX+API+v6.0+Migration+Guide#Restructured-Tax-API-for-
+explicit-TaxStatement-level-and-shared-issuer%2C-recipient-entities%2C-RFC-0280 ,
+```
+from DRAFT 0280 - US Tax adding support for compound TaxStatements, common issuer and recipient entities
+
+Updating Tax API to support multi-form TaxStatements and shared model for issuers / recipients.
+
+Upgrading for Core structure changes, RFC 0232
+
+An implementer’s mapping of each Account must set required AccountDescriptor property accountCategory, and account is no
+
+longer wrapped with a named property (like depositAccount) when set into an AccountWithDetails response object.
+
+An implementer’s mapping of each Transaction must set required Transaction property accountCategory, and transaction is no
+
+longer wrapped with a named property (like depositTransaction) when set into a Transactions response object.
+
+An implementer’s mapping of each Security must set required new base class Security property securityCategory, and security is
+
+assigned into property security (rather than a typed name like stockSecurity) when set onto a Holding response object.
+
+Holding response object also now supports an array of securityIds with id/idType pairs instead of a single
+
+securityId/securityIdType pair of identifiers.
+
+From DRAFT 0232 - Add discriminators to AccountDescriptor and Transaction (AccountCategory) and Security (SecurityCategory)
+
+
+**Prior Accounts definition: (abbreviated) Revised Accounts definition: (full)**
+
+AccountWithDetails:
+title: Account With Details entity
+oneOf:
+
+- properties:
+depositAccount:
+$ref:
+'#/components/schemas/DepositAccount'
+- properties:
+loanAccount:
+$ref:
+'#/components/schemas/LoanAccount'
+- properties:
+locAccount:
+$ref:
+'#/components/schemas/LocAccount'
+- properties:
+investmentAccount:
+$ref:
+'#/components/schemas/InvestmentAccount'
+- properties:
+insuranceAccount:
+$ref:
+'#/components/schemas/InsuranceAccount'
+- properties:
+annuityAccount:
+$ref:
+'#/components/schemas/AnnuityAccount'
+- properties:
+commercialAccount:
+$ref:
+'#/components/schemas/CommercialAccount'
+
+```
+AccountWithDetails:
+title: Account With Details entity
+description: An instance of an account with
+full details
+type: object
+discriminator:
+propertyName: accountCategory
+mapping:
+ANNUITY_ACCOUNT:
+'#/components/schemas/AnnuityAccount'
+COMMERCIAL_ACCOUNT:
+'#/components/schemas/CommercialAccount'
+DEPOSIT_ACCOUNT:
+'#/components/schemas/DepositAccount'
+INSURANCE_ACCOUNT:
+'#/components/schemas/InsuranceAccount'
+INVESTMENT_ACCOUNT:
+'#/components/schemas/InvestmentAccount'
+LOAN_ACCOUNT:
+'#/components/schemas/LoanAccount'
+LOC_ACCOUNT:
+'#/components/schemas/LineOfCreditAccount'
+oneOf:
+```
+- $ref:
+'#/components/schemas/AnnuityAccount'
+- $ref:
+'#/components/schemas/CommercialAccount'
+- $ref:
+'#/components/schemas/DepositAccount'
+- $ref:
+'#/components/schemas/InsuranceAccount'
+- $ref:
+'#/components/schemas/InvestmentAccount'
+- $ref:
+'#/components/schemas/LineOfCreditAccount'
+- $ref: '#/components/schemas/LoanAccount'
+
+
+**Examples of prior structure:**
+
+**Accounts:**
+accounts:
+
+- depositAccount:
+accountId: string
+
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+currentBalance: 0
+openingDayBalance: 0
+availableBalance: 0
+annualPercentageYield: 0
+
+- loanAccount:
+accountId: string
+
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+principalBalance: 0
+escrowBalance: 0
+originalPrincipal: 0
+originatingDate: 2021-07- 15
+
+- locAccount:
+accountId: string
+
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+creditLine: 0
+availableCredit: 0
+nextPaymentAmount: 0
+nextPaymentDate: 2021-07- 15
+
+- investmentAccount:
+accountId: string
+
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+allowedCheckWriting: true
+allowedOptionTrade: true
+currentValue: 0
+availableCashBalance: 0
+
+- insuranceAccount:
+accountId: string
+
+policyPremium: 0
+
+**Examples of new v6.0 structure:**
+
+```
+Accounts:
+accounts:
+```
+- accountId: string
+accountCategory: DEPOSIT_ACCOUNT
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+currentBalance: 0
+openingDayBalance: 0
+availableBalance: 0
+annualPercentageYield: 0
+- accountId: string
+accountCategory: LOAN_ACCOUNT
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+principalBalance: 0
+escrowBalance: 0
+originalPrincipal: 0
+originatingDate: 2021-07- 15
+- accountId: string
+accountCategory: LOC_ACCOUNT
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+creditLine: 0
+availableCredit: 0
+nextPaymentAmount: 0
+nextPaymentDate: 2021-07- 15
+- accountId: string
+accountCategory: INVESTMENT_ACCOUNT
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+allowedCheckWriting: true
+allowedOptionTrade: true
+currentValue: 0
+availableCashBalance: 0
+- accountId: string
+accountCategory: INSURANCE_ACCOUNT
+policyPremium: 0
+
+
+policyPremiumTerm: MONTHLY
+policyStartDate: 2021-07- 15
+policyStatus: ACTIVE
+
+- annuityAccount:
+accountId: string
+
+payoutType: DEFERRED
+policyProductType: FIXED
+payoutAmount: 0
+payoutMode: ANNUALLY
+
+- commercialAccount:
+accountId: string
+
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+openingLedgerBalance: 0
+closingLedgerBalance: 0
+currentLedgerBalance: 0
+openingAvailableBalance: 0
+
+```
+policyPremiumTerm: MONTHLY
+policyStartDate: 2021-07- 15
+policyStatus: ACTIVE
+```
+- accountId: string
+accountCategory: ANNUITY_ACCOUNT
+payoutType: DEFERRED
+policyProductType: FIXED
+payoutAmount: 0
+payoutMode: ANNUALLY
+- accountId: string
+accountCategory: COMMERCIAL_ACCOUNT
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+openingLedgerBalance: 0
+closingLedgerBalance: 0
+currentLedgerBalance: 0
+openingAvailableBalance: 0
+
+
+**Prior Transactions definition: (abbreviated)**
+
+Transactions:
+title: Transactions entity
+description: Optionally paginated array of
+transactions
+type: object
+allOf:
+
+- $ref:
+'./fdxapi.components.yaml#/components/schemas/Pagina
+tedArray'
+- type: object
+properties:
+transactions:
+description: >-
+An array of transactions with entity
+type dependent on the
+account type (deposit, loan, line of
+credit, investment, insurance, or commercial)
+type: array
+items:
+oneOf:
+- properties:
+depositTransaction:
+$ref:
+'#/components/schemas/DepositTransaction'
+- properties:
+loanTransaction:
+$ref:
+'#/components/schemas/LoanTransaction'
+- properties:
+locTransaction:
+$ref:
+'#/components/schemas/LocTransaction'
+- properties:
+investmentTransaction:
+$ref:
+'#/components/schemas/InvestmentTransaction'
+- properties:
+insuranceTransaction:
+
+```
+Revised Transactions definition: (full)
+```
+```
+Transactions:
+title: Transactions entity
+description: Optionally paginated array of
+transactions
+type: object
+allOf:
+```
+- $ref:
+'./fdxapi.components.yaml#/components/schemas/Pagina
+tedArray'
+- type: object
+properties:
+transactions:
+description: >-
+An array of transactions with entity
+type dependent on the account type
+(commercial, deposit, insurance,
+investment, line of credit or loan)
+type: array
+items:
+discriminator:
+propertyName: accountCategory
+mapping:
+COMMERCIAL_ACCOUNT:
+'#/components/schemas/CommercialTransaction'
+DEPOSIT_ACCOUNT:
+'#/components/schemas/DepositTransaction'
+INSURANCE_ACCOUNT:
+'#/components/schemas/InsuranceTransaction'
+INVESTMENT_ACCOUNT:
+'#/components/schemas/InvestmentTransaction'
+LOAN_ACCOUNT:
+'#/components/schemas/LoanTransaction'
+LOC_ACCOUNT:
+'#/components/schemas/LineOfCreditTransaction'
+oneOf:
+- $ref:
+'#/components/schemas/CommercialTransaction'
+
+
+$ref:
+'#/components/schemas/InsuranceTransaction'
+
+- properties:
+commercialTransaction:
+$ref:
+'#/components/schemas/CommercialTransaction'
+    - $ref:
+    '#/components/schemas/DepositTransaction'
+    - $ref:
+    '#/components/schemas/InsuranceTransaction'
+    - $ref:
+    '#/components/schemas/InvestmentTransaction'
+    - $ref:
+    '#/components/schemas/LineOfCreditTransaction'
+    - $ref:
+    '#/components/schemas/LoanTransaction'
+
+
+**Examples of prior structure:**
+
+**Transactions:**
+transactions:
+
+- depositTransaction:
+accountId: string
+
+transactionId: string
+payee: string
+checkNumber: 0
+
+- loanTransaction:
+accountId: string
+
+transactionId: string
+paymentDetails:
+principalAmount: 0
+interestAmount: 0
+insuranceAmount: 0
+escrowAmount: 0
+pmiAmount: 0
+feesAmount: 0
+
+- locTransaction:
+accountId: string
+
+transactionId: string
+checkNumber: 0
+paymentDetails:
+principalAmount: 0
+interestAmount: 0
+insuranceAmount: 0
+escrowAmount: 0
+pmiAmount: 0
+feesAmount: 0
+
+- investmentTransaction:
+accountId: string
+
+transactionId: string
+shares: 0
+faceValue: 0
+price: 0
+
+**Examples of new v6.0 structure:**
+
+```
+Transactions:
+transactions:
+```
+- accountId: string
+accountCategory: DEPOSIT_ACCOUNT
+transactionId: string
+payee: string
+checkNumber: 0
+- accountId: string
+accountCategory: LOAN_ACCOUNT
+transactionId: string
+paymentDetails:
+principalAmount: 0
+interestAmount: 0
+insuranceAmount: 0
+escrowAmount: 0
+pmiAmount: 0
+feesAmount: 0
+- accountId: string
+accountCategory: LOC_ACCOUNT
+transactionId: string
+checkNumber: 0
+paymentDetails:
+principalAmount: 0
+interestAmount: 0
+insuranceAmount: 0
+escrowAmount: 0
+pmiAmount: 0
+feesAmount: 0
+- accountId: string
+accountCategory: INVESTMENT_ACCOUNT
+transactionId: string
+shares: 0
+faceValue: 0
+price: 0
+
+
+securityId: string
+securityIdType: CINS
+securityType: BOND
+symbol: string
+markup: 0
+commission: 0
+taxes: 0
+fees: 0
+load: 0
+
+- insuranceTransaction:
+accountId: string
+
+transactionId: string
+
+- commercialTransaction:
+accountId: string
+
+transactionId: string
+immediateAvailableBalance: 0
+nextDayAvailableBalance: 0
+twoDaysPlusAvailableBalance: 0
+referenceBankId: string
+referenceBranchId: string
+referenceCustomerId: string
+
+```
+securityId: string
+securityIdType: CINS
+securityType: BOND
+symbol: string
+markup: 0
+commission: 0
+taxes: 0
+fees: 0
+load: 0
+```
+- accountId: string
+accountCategory: INSURANCE_ACCOUNT
+transactionId: string
+- accountId: string
+accountCategory: COMMERCIAL_ACCOUNT
+transactionId: string
+immediateAvailableBalance: 0
+nextDayAvailableBalance: 0
+twoDaysPlusAvailableBalance: 0
+referenceBankId: string
+referenceBranchId: string
+referenceCustomerId: string
+
+
+**Prior Holding securityId/securityIdType and
+xxxSecurity definitions: (abbreviated)**
+
+Holding:
+title: Holding entity
+description: A holding in an investment
+account
+type: object
+allOf:
+
+- type: object
+properties:
+holdingId:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Identi
+fier'
+description: Long term persistent
+identity of the holding
+securityId:
+description: Unique identifier of
+security
+type: string
+securityIdType:
+$ref:
+'#/components/schemas/SecurityIdType'
+description: CINS, CMC, CME, CUSIP,
+ISIN, ITSA, NASDAQ, SEDOL, SICC, VALOR, WKN
+# ...
+- oneOf:
+- properties:
+mutualFundSecurity:
+$ref:
+'#/components/schemas/MutualFundSecurity'
+- properties:
+optionSecurity:
+$ref:
+'#/components/schemas/OptionSecurity'
+- properties:
+otherSecurity:
+$ref:
+'#/components/schemas/OtherSecurity'
+
+```
+Revised Holding securityIds and security definition:
+(full)
+```
+```
+Holding:
+title: Holding entity
+description: A holding in an investment
+account
+type: object
+properties:
+holdingId:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Identi
+fier'
+description: Long term persistent identity
+of the holding
+securityIds:
+description: Unique identifiers for the
+security
+type: array
+items:
+$ref: '#/components/schemas/SecurityId'
+# ...
+security:
+discriminator:
+propertyName: securityCategory
+mapping:
+DEBT_SECURITY:
+'#/components/schemas/DebtSecurity'
+MUTUAL_FUND_SECURITY:
+'#/components/schemas/MutualFundSecurity'
+OPTION_SECURITY:
+'#/components/schemas/OptionSecurity'
+OTHER_SECURITY:
+'#/components/schemas/OtherSecurity'
+STOCK_SECURITY:
+'#/components/schemas/StockSecurity'
+SWEEP_SECURITY:
+'#/components/schemas/SweepSecurity'
+oneOf:
+```
+
+- properties:
+stockSecurity:
+$ref:
+'#/components/schemas/StockSecurity'
+- properties:
+sweepSecurity:
+$ref:
+'#/components/schemas/SweepSecurity'
+- properties:
+debtSecurity:
+$ref:
+'#/components/schemas/DebtSecurity'
+    - $ref:
+    '#/components/schemas/DebtSecurity'
+    - $ref:
+    '#/components/schemas/MutualFundSecurity'
+    - $ref:
+    '#/components/schemas/OptionSecurity'
+    - $ref:
+    '#/components/schemas/OtherSecurity'
+    - $ref:
+    '#/components/schemas/StockSecurity'
+    - $ref:
+    '#/components/schemas/SweepSecurity'
+
+```
+# New:
+SecurityId:
+title: Security ID entity
+description: Unique identifier for a security
+type: object
+properties:
+id:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Identi
+fier'
+description: Security identifier
+idType:
+$ref:
+'#/components/schemas/SecurityIdType'
+description: CINS, CMC, CME, CUSIP, ISIN,
+ITSA, NASDAQ, SEDOL, SICC, VALOR, WKN
+```
+
+**Examples of prior structure:**
+
+**Holdings / Securities:**
+
+holdings:
+
+- holdingId: string
+securityId: string
+securityIdType: CINS
+mutualFundSecurity:
+
+mutualFundType: OPENEND
+unitsStreet: 0
+unitsUser: 0
+reinvestDividends: true
+reinvestCapitalGains: true
+yield: 0
+yieldAsOfDate: 2021-07- 15
+
+- holdingId: string
+securityId: string
+securityIdType: CINS
+optionSecurity:
+
+secured: COVERED
+optionType: CALL
+strikePrice: 0
+expireDate: 2021-07- 15
+sharesPerContract: 0
+
+- holdingId: string
+securityId: string
+securityIdType: CINS
+otherSecurity:
+
+typeDescription: string
+
+- holdingId: string
+securityId: string
+securityIdType: CINS
+stockSecurity:
+
+unitsStreet: 0
+unitsUser: 0
+
+**Examples of new v6.0 structure:**
+
+```
+Holdings / Securities:
+```
+```
+holdings:
+```
+- holdingId: string
+securityIds:
+- id: string
+idType: CINS
+security:
+securityCategory: MUTUAL_FUND_SECURITY
+mutualFundType: OPENEND
+unitsStreet: 0
+unitsUser: 0
+reinvestDividends: true
+reinvestCapitalGains: true
+yield: 0
+yieldAsOfDate: 2021-07- 15
+- holdingId: string
+securityIds:
+- id: string
+idType: CINS
+security:
+securityCategory: OPTION_SECURITY
+secured: COVERED
+optionType: CALL
+strikePrice: 0
+expireDate: 2021-07- 15
+sharesPerContract: 0
+- holdingId: string
+securityIds:
+- id: string
+idType: CINS
+security:
+securityCategory: OTHER_SECURITY
+typeDescription: string
+- holdingId: string
+securityIds:
+- id: string
+idType: CINS
+
+
+reinvestDividends: true
+stockType: COMMON
+yield: 0
+yieldAsOfDate: 2021-07- 15
+
+- holdingId: string
+securityId: string
+securityIdType: CINS
+sweepSecurity:
+
+currentBalance: 0
+availableBalance: 0
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+checks: true
+
+- holdingId: string
+securityId: string
+securityIdType: CINS
+debtSecurity:
+
+parValue: 0
+debtType: COUPON
+debtClass: CORPORATE
+couponRate: 0
+couponDate: 2021-07- 15
+couponMatureFrequency: ANNUAL
+callPrice: 0
+yieldToCall: 0
+callDate: 2021-07- 15
+callType: CALL
+yieldToMaturity: 0
+bondMaturityDate: 2021-07- 15
+
+```
+security:
+securityCategory: STOCK_SECURITY
+unitsStreet: 0
+unitsUser: 0
+reinvestDividends: true
+stockType: COMMON
+yield: 0
+yieldAsOfDate: 2021-07- 15
+```
+- holdingId: string
+securityIds:
+- id: string
+idType: CINS
+security:
+securityCategory: SWEEP_SECURITY
+currentBalance: 0
+availableBalance: 0
+balanceAsOf: 2021-07- 15T14:46:41.375Z
+checks: true
+- holdingId: string
+securityIds:
+- id: string
+idType: CINS
+security:
+securityCategory: DEBT_SECURITY
+parValue: 0
+debtType: COUPON
+debtClass: CORPORATE
+couponRate: 0
+couponDate: 2021-07- 15
+couponMatureFrequency: ANNUAL
+callPrice: 0
+yieldToCall: 0
+callDate: 2021-07- 15
+callType: CALL
+yieldToMaturity: 0
+bondMaturityDate: 2021- 07 - 15
+
+
+Adding parameter and response headers previously specified but now
+
+defined in yaml, RFC 0269
+
+Two API header elements defined in the FDX API Specification have now been defined in the yaml.
+
+All API implementations currently not supporting the **required** request header and response header x-fapi-interaction-id will
+
+need to be updated to support the header in all requests and responses.
+
+From DRAFT 0269 - Add definitions of FDX-API-Actor-Type header to API requests and x-fapi-interaction-id header to all API
+
+requests and responses
+
+
+**Example v5.3.1 endpoint**
+
+**/consents/{consentId} from
+fdxapi.consent.yaml**
+
+Using fdxapi.consent.yaml as an example,
+
+with parameters defined at API path or
+
+endpoint level:
+
+/consents/{consentId}:
+parameters:
+
+- $ref:
+'#/components/parameters/ConsentIdPa
+th'
+get:
+summary: Get Consent Grant
+description: Get a Consent
+Grant
+operationId: getConsentGrant
+tags:
+- User Consent
+responses:
+'200':
+description: Ok
+content:
+application/json:
+schema:
+$ref:
+'#/components/schemas/ConsentGrant'
+# ...
+
+**Endpoint as updated with new request / response headers**
+
+```
+The optional request header FdxApiActorTypeHeader and required request header
+FapiInteractionIdHeader were added at the path / endpoint level. To each
+response the response header x-fapi-interaction-id was also added:
+```
+```
+/consents/{consentId}:
+parameters:
+```
+- $ref: '#/components/parameters/ConsentIdPath'
+# two request parameters added:
+- $ref:
+'./fdxapi.components.yaml#/components/parameters/FapiInteractionIdHe
+ader'
+- $ref:
+'./fdxapi.components.yaml#/components/parameters/FdxApiActorTypeHead
+er'
+get:
+summary: Get Consent Grant
+description: Get a Consent Grant
+operationId: getConsentGrant
+tags:
+- User Consent
+responses:
+'200':
+description: Ok
+# one response header added:
+headers:
+x-fapi-interaction-id:
+$ref: './fdxapi.components.yaml#/components/headers/x-
+fapi-interaction-id'
+# ...
+
+
+Standard responses also got the new response
+
+header definition
+
+responses:
+
+### '406':
+
+description: Content Type not
+Supported
+content:
+application/json:
+schema:
+$ref:
+'#/components/schemas/Error'
+# ...
+
+```
+responses:
+```
+### '406':
+
+```
+description: Content Type not Supported
+# one response header added:
+headers:
+x-fapi-interaction-id:
+$ref: '#/components/headers/x-fapi-interaction-id'
+content:
+application/json:
+schema:
+$ref: '#/components/schemas/Error'
+# ...
+```
+
+**New header definitions used in above:**
+
+The defined header properties FdxApiActorTypeHeader, InteractionIdHeader and x-fapi-
+
+interaction-id were added in v5.3.0:
+
+parameters:
+
+FapiInteractionIdHeader:
+name: x-fapi-interaction-id
+in: header
+description: >-
+Unique identifier for this interaction as an
+[IETF RFC 4122](https://datatracker.ietf.org/doc/html/rfc4122)
+UUID.
+Used across all FDX API requests and responses
+schema:
+type: string
+required: true
+example: c770aef3-6784-41f7-8e0e-ff5f97bddb3a
+
+FdxApiActorTypeHeader:
+name: FDX-API- Actor-Type
+in: header
+description: Identifies whether the customer is present (USER) or
+it is a BATCH operation
+schema:
+$ref: '#/components/schemas/ActorType'
+example: BATCH
+
+headers:
+
+x-fapi-interaction-id:
+description: Unique identifier for this interaction
+schema:
+type: string
+example: rrt- 970585410023330903 - b-gce- 821 - 23397 - 1
+
+
+Upgrading for deprecated element removals, RFC 0268
+
+A number of request and response entities have had name changes and prior versions are deprecated. New names, entities, and one
+
+endpoint should be used instead.
+
+From DRAFT 0268 - Remove deprecations and obsolete markup for v6.0
+
+**Address.state in fdxapi.components.yaml To Address.region**
+
+From Address, line 113+ (lines 18-22 here):
+
+```
+Address:
+title: Address
+description: Postal address
+type: object
+properties:
+# ...
+state:
+allOf:
+```
+- $ref:
+'#/components/schemas/String64'
+description: State or province.
+Deprecated, will remove in FDX V6.0
+deprecated: true
+region:
+$ref:
+'#/components/schemas/String64'
+description: State or province
+or territory. Replaces "state" property
+# ...
+
+Removal of state property in addresses, replaced with region :
+
+```
+region:
+$ref: '#/components/schemas/String64'
+# updated description:
+description: State, Province, Territory, Canton or
+Prefecture.
+From [Universal Postal
+Union](https://www.upu.int/en/Postal-Solutions/Programmes-
+Services/Addressing-Solutions#addressing-s42- standard)
+as of 2-26- 2020, [S42 International Address
+Standards](https://www.upu.int/UPU/media/upu/documents/PostCod
+e/S42_International-Addressing-Standards.pdf).
+For U.S. addresses can be 2-character code from
+'#/components/schemas/StateCode'
+```
+
+**Replace deprecated AnnuityAccount
+properties in fdxapi.core.yaml, from
+v5.3.1 schemas:**
+
+AnnuityAccount:
+title: Annuity Account entity
+description: An annuity account type
+type: object
+allOf:
+
+- $ref:
+'#/components/schemas/Account'
+- type: object
+properties:
+annuityProductType:
+allOf:
+- $ref:
+'#/components/schemas/AnnuityProductType'
+description: CURRENCY,
+SHARES. Deprecated, will be removed in
+v6.0
+deprecated: true
+
+**To the new ACORD-defined property names**
+
+```
+Deprecated field annuityProductType is not replaced by a new field on
+AnnuityAccount:
+```
+```
+Existing field payoutType is not replacing a deprecated field on
+AnnuityAccount:
+```
+```
+payoutType:
+$ref: '#/components/schemas/PayoutType'
+description: Indicates type of payout such as
+immediate or deferred
+```
+annuityValueBasis:
+allOf:
+
+- $ref:
+'#/components/schemas/AnnuityValueBasis'
+description: FIXED,
+VARIABLE. Deprecated, will be removed in
+v6.0
+deprecated: true
+
+```
+policyProductType:
+$ref: '#/components/schemas/PolicyProductType'
+description: The type of annuity product, e.g.
+Fixed or Variable
+```
+
+paymentAmount:
+type: number
+description: Amount of the
+recurring payment. Deprecated, will be
+removed in v6.0
+deprecated: true
+
+```
+payoutAmount:
+type: number
+description: Amount paid out, based on mode
+frequency
+```
+paymentFrequency:
+allOf:
+
+- $ref:
+'#/components/schemas/PaymentFrequency'
+description: >-
+ANNUALLY, BIWEEKLY, DAILY,
+MONTHLY, SEMIANNUALLY, SEMIMONTHLY,
+WEEKLY. Deprecated, will be removed in
+v6.0
+deprecated: true
+
+```
+payoutMode:
+$ref: '#/components/schemas/PayoutMode'
+description: Frequency of annuity payments
+```
+paymentStartDate:
+allOf:
+
+- $ref:
+'./fdxapi.components.yaml#/components/sche
+mas/Timestamp'
+description: Date of first
+payment; could be a future date.
+Deprecated, will be removed in v6.0
+deprecated: true
+
+```
+payoutStartDate:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/DateString'
+description: Date the payout starts
+```
+paymentEndDate:
+allOf:
+
+- $ref:
+'./fdxapi.components.yaml#/components/sche
+mas/Timestamp'
+description: Date last
+payment will be made. Deprecated, will be
+removed in v6.0
+deprecated: true
+
+```
+payoutEndDate:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/DateString'
+description: Date the payout ends
+```
+
+totalPaymentCount:
+type: number
+description: Total number of
+payments that will be produced by the
+annuity. Deprecated, will be removed in
+v6.0
+deprecated: true
+
+```
+numberModalPayouts:
+type: integer
+description: Total number of payouts
+```
+netPresentValue:
+type: number
+description: Surrender or
+cash balance value. Deprecated, will be
+removed in v6.0
+deprecated: true
+
+```
+surrenderValue:
+type: number
+description: Cash surrender value (net)
+available if contract is surrendered
+```
+annualIncrease:
+type: number
+description: Percent or
+dollar amount of annual payment increase.
+Deprecated, will be removed in v6.0
+deprecated: true
+annualIncreaseType:
+allOf:
+
+- $ref:
+'#/components/schemas/AnnualIncreaseType'
+description: FIXED, PERCENT,
+DOLLAR. Deprecated, will be removed in
+v6.0
+deprecated: true
+
+```
+Rather than two fields, one for annualIncrease and one to specify the
+annualIncreaseType, either the payoutChangePercentage or
+payoutChangeAmount field is specified:
+```
+```
+payoutChangePercentage:
+type: number
+description: Percentage of the accumulated value
+to be paid to the payee each year; used exclusive of
+payoutChangeAmount
+payoutChangeAmount:
+type: number
+description: Incremental modal amount (positive
+or negative) by which the payout amount will be changed; used
+exclusive of payoutPercentage
+```
+periodCertainGuarantee:
+allOf:
+
+- $ref:
+'#/components/schemas/PeriodCertainGuarant
+ee'
+description: NONE, 5-YEAR,
+10- YEAR, 20-YEAR, 30-YEAR. Deprecated,
+will be removed in v6.0
+deprecated: true
+
+```
+periodCertainType:
+$ref: '#/components/schemas/PeriodCertainType'
+description: The number of modal periods
+comprising the duration of the certain period of an annuity
+payout
+```
+
+```
+Replace use of deprecated InvestmentAccount property in
+fdxapi.core.yaml of type Timestamp, from v5.3.1 schemas:
+```
+```
+With the new corrected spelling property name of
+type integer
+```
+Misspelled property in InvestmentAccount, starting line 1883:
+
+InvestmentAccount:
+title: Investment Account entity
+description: An investment account type and information
+such as balances, transactions,
+holdings and privileges
+type: object
+allOf:
+
+- $ref: '#/components/schemas/Account'
+- type: object
+properties:
+# ...
+calendaryearFor401K:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Timestamp'
+description: >-
+Date for this calendar year for 401k account.
+Deprecated, renamed to
+calendarYearFor401K, will be removed in FDX
+v6.0
+deprecated: true
+# ...
+
+```
+calendarYearFor401K:
+type: integer
+description: The calendar
+year for this 401k account
+```
+
+**Deprecated endpoint GET /transfers/{transferId}/status in**
+
+**fdxapi.money-movement.yaml, from v5.3.1 schemas:**
+
+Entire endpoint, starting line 1806:
+
+/transfers/{transferId}/status:
+get:
+operationId: getTransferStatus
+tags:
+
+- Internal Transfers
+description: >-
+This endpoint has been deprecated in favor of the
+`getTransfer`
+(`GET /transfers/{transferId}`) operation. Get status
+of transfer between accounts
+deprecated: true
+summary: Get transfer status
+parameters:
+- $ref: '#/components/parameters/TransferIdPath'
+responses:
+'200':
+description: Current status of the requested
+transfer
+content:
+application/json:
+schema:
+$ref: '#/components/schemas/TransferStatus'
+# ...
+
+```
+Should instead use endpoint GET
+/transfers/{transferId}
+```
+Replace with
+
+```
+/transfers/{transferId}:
+get:
+operationId: getTransfer
+tags:
+```
+- Internal Transfers
+description: Get a transfer been
+accounts
+summary: Get a transfer
+parameters:
+- $ref:
+'#/components/parameters/TransferIdPath'
+responses:
+'200':
+description: Ok
+content:
+application/json:
+schema:
+$ref:
+'#/components/schemas/Transfer'
+# ...
+
+
+**Replace deprecated taxYears parameter removed from**
+
+**fdxapi.tax.yaml, from v5.3.1 schemas:**
+
+taxYears array parameter:
+
+/tax-forms:
+get:
+operationId: searchForTaxForms
+summary: Search tax forms
+description: Get the full lists of tax
+document data and tax form images
+available for a specific year for the
+current authorized customer
+tags:
+
+- Tax Forms
+parameters:
+- name: taxYears
+in: query
+description: >-
+One or more tax years in which to
+search for tax forms. Comma separated.
+Deprecated in favor of single taxYear
+parameter, will be removed in FDX v6.0
+deprecated: true
+style: form
+explode: false
+schema:
+type: array
+items:
+type: integer
+- $ref:
+'#/components/parameters/AccountIdQuery'
+- $ref:
+'#/components/parameters/TaxYearQuery'
+# ...
+
+**With single taxYear parameter**
+
+Becomes single integer parameter
+
+```
+/tax-forms:
+get:
+operationId: searchForTaxForms
+summary: Search tax forms
+description: Get the full lists of tax document
+data and tax form images
+available for a specific year for the current
+authorized customer
+tags:
+```
+- Tax Forms
+parameters:
+# ...
+- $ref:
+'#/components/parameters/TaxYearQuery'
+# ...
+
+```
+components:
+```
+```
+parameters:
+```
+```
+TaxYearQuery:
+name: taxYear
+in: query
+description: Tax year in which to search for
+tax forms. Optional
+schema:
+type: integer
+```
+
+Other FDX Tax API fields were removed from the schema since
+
+they have not been included on IRS Tax Forms since 2020 or
+
+earlier. They should not need support or migration to V6.0.0.
+
+```
+See DRAFT 0268 - Remove deprecations and obsolete markup for
+v6.0for the full list of removed tax form properties, and RFC 0280
+changes for fdxapi.tax.yaml for complete proposed yaml with all
+deprecated elements removed.
+```
+
+Standardizing API response as schema object (rather than array), RFC
+
+0278
+
+The defined response for /consents/{consentId}/revocation is modified to a schema object from its prior array definition. One
+
+Money Movement operationId is changed.
+
+From DRAFT 0278 - v6.0 consistency cleanup to match Style Guide
+
+
+**Prior array response to**
+
+**/consents/{consentId}/revocation in
+fdxapi.consent.yaml**
+
+Response for GET consent revocations was modified to be
+
+an object containing an array, rather than an array directly.
+
+/consents/{consentId}/revocation:
+parameters:
+
+- $ref:
+'#/components/parameters/ConsentIdPath'
+# ...
+get:
+# ...
+responses:
+'200':
+description: Ok
+content:
+application/json:
+schema:
+type: array
+items:
+$ref:
+'#/components/schemas/ConsentRevocation'
+
+```
+Changed to newly defined ConsentRevocationList entity
+containing an array
+```
+```
+/consents/{consentId}/revocation:
+parameters:
+```
+- $ref: '#/components/parameters/ConsentIdPath'
+# ...
+get:
+# ...
+responses:
+'200':
+description: Ok
+content:
+application/json:
+schema:
+$ref:
+'#/components/schemas/ConsentRevocationList'
+
+```
+ConsentRevocationList:
+title: Consent Revocation List entity
+description: List of consent grant revocation
+requests
+type: object
+properties:
+revocations:
+description: The list of revocation requests
+type: array
+items:
+$ref:
+'#/components/schemas/ConsentRevocation'
+```
+**Prior definition of** /recurring-
+
+payments/{recurringPaymentId}/payments **in**
+
+fdxapi.money-movement.yaml **with** operationId **of**
+
+paymentsForRecurringPayment
+
+**Changed to** operationId **of** getPaymentsForRecurringPayment
+
+
+Code generation can create artifact names based on
+
+operationId, this change could impact automated
+
+development tools:
+
+/recurring-
+payments/{recurringPaymentId}/payments:
+get:
+operationId: paymentsForRecurringPayment
+
+New code generation will use new operationId for names?
+
+```
+/recurring-payments/{recurringPaymentId}/payments:
+get:
+operationId: getPaymentsForRecurringPayment
+```
+```
+And name changed in OperationId enum in fdxapi.meta.yaml,
+which would similarly impact any implementation of Meta APIs
+referencing /recurring-
+payments/{recurringPaymentId}/payments endpoint.
+```
+
+Common property name refactorings, RFC 0282
+
+From DRAFT 0282 - Updates for Consistent Property Naming for FDX API v6.0
+
+**Prior property names: Changed to new property names:**
+
+```
+To sync existing programId with naming in /reward-
+programs/{rewardProgramId}:
+```
+```
+RewardProgram:
+# ...
+properties:
+programId:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Identi
+fier'
+description: Long term persistent identity
+of the reward program
+```
+New name in fdxapi.core.yaml
+
+```
+RewardProgram:
+# ...
+properties:
+rewardProgramId:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Identi
+fier'
+description: Long term persistent identity
+of the reward program
+```
+
+To use plural property names for all arrays, rename location
+
+and partyGroup:
+
+Branch:
+# ...
+location:
+type: array
+description: Location of the branch
+items:
+$ref:
+'#/components/schemas/PaymentDeliveryAddress'
+
+FinancialInstitution:
+# ...
+location:
+type: array
+description: Location of the financial
+institution
+items:
+$ref:
+'#/components/schemas/PaymentDeliveryAddress'
+
+PaymentInitiationPartyToPaymentMethod:
+# ...
+location:
+type: array
+description: Address associated with the
+payment method registration of a payment initiation
+party
+items:
+$ref:
+'#/components/schemas/PaymentDeliveryAddress'
+
+PaymentInitiationParty:
+# ...
+partyGroup:
+type: array
+description: |
+
+```
+New names locations and partyGroups in fdxapi.money-
+movement.yaml:
+```
+```
+Branch:
+# ...
+locations:
+type: array
+description: Locations of the branch
+items:
+$ref:
+'#/components/schemas/PaymentDeliveryAddress'
+```
+```
+FinancialInstitution:
+# ...
+locations:
+type: array
+description: Locations of the financial
+institution
+items:
+$ref:
+'#/components/schemas/PaymentDeliveryAddress'
+```
+```
+PaymentInitiationPartyToPaymentMethod:
+# ...
+locations:
+type: array
+description: Addresses associated with the
+payment method registration of a payment initiation
+party
+items:
+$ref:
+'#/components/schemas/PaymentDeliveryAddress'
+```
+```
+PaymentInitiationParty:
+# ...
+partyGroups:
+type: array
+description: |
+```
+
+The PartyGroups to which this
+initiation party belongs.
+Optional, can be omitted if party
+belongs to no groups.
+items:
+$ref:
+'#/components/schemas/PartyGroup'
+
+```
+The PartyGroups to which this
+initiation party belongs.
+Optional, can be omitted if party
+belongs to no groups.
+items:
+$ref:
+'#/components/schemas/PartyGroup'
+```
+To use plural property names for all arrays, rename email in
+
+fdxapi.components.yaml:
+
+# from fdxapi.components.yaml
+Customer:
+# ...
+email:
+type: array
+items:
+type: string
+description: >-
+An array of the customer's electronic
+mail addresses
+addresses:
+type: array
+items:
+$ref:
+'#/components/schemas/DeliveryAddress'
+description: >-
+An array of the customer's physical mail
+addresses
+telephones:
+type: array
+items:
+$ref:
+'#/components/schemas/TelephoneNumber'
+description: An array of the customer's
+telephone numbers
+
+New name emails refactored into a shared Contacts entity:
+
+```
+# new contact arrays to fdxapi.components.yaml
+Contacts:
+# ...
+properties:
+emails:
+type: array
+items:
+type: string
+description: Array of the contact email
+addresses
+addresses:
+# ...
+telephones:
+# ...
+```
+```
+# updated
+Customer:
+# ...
+allOf:
+```
+- $ref: '#/components/schemas/Contacts'
+- type: object
+properties:
+# remaining ...
+
+
+Change **Image Id Not Found** error code from ‘406’ to ‘404’
+
+from /accounts/{accountId}/transaction-
+
+images/{imageId} in fdxapi.core.yaml:
+
+### '404':
+
+### # ...
+
+### '406':
+
+description: Image Id not found for
+Transaction
+content:
+application/json:
+schema:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Error'
+examples:
+Image Id not found for Transaction:
+value:
+code: '1103'
+message: Image Id not found for
+Transaction
+debugMessage: Provider custom
+developer-level error details for troubleshooting
+
+```
+Add $ref: to ‘406' error in fdxapi.components.yaml for
+wrong Content Type, and change existing ‘406’ to new '404’
+example:
+```
+### '404':
+
+```
+description: Account or image with id not
+found
+content:
+application/json:
+schema:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Error'
+examples:
+# ...
+Image Id not found for Transaction:
+value:
+code: '1103'
+message: Image Id not found for
+Transaction
+debugMessage: Provider custom
+developer-level error details for troubleshooting
+'406':
+$ref:
+'./fdxapi.components.yaml#/components/responses/406'
+```
+
+Current RecipientRequest **“type: number”** properties
+
+duration_period and lookback_period would permit decimal
+
+day amounts:
+
+Text description of each from RFC 0153 - Recipient Registration
+
+Automation:
+
+- duration_period - Optional
+    o The number of days which consent is granted.
+       Duration period is required when
+       duration_type=time_based.
+- lookback_period - Optional
+    o The maximum number of days allowed for Data
+       Recipient consumers to obtain in transaction
+       history, effective from the current date.
+
+RecipientRequest:
+# ...
+duration_period:
+type: number
+description: The duration period is the
+maximum consent duration that would be requested for
+a Recipient consumer
+lookback_period:
+type: number
+description: The maximum number of days
+allowed for Data Recipient consumers to obtain in
+transaction history,
+effective from the current
+date
+
+```
+Update each to type: integer , since each is a "number of
+days", and updating descriptions to match.
+```
+```
+# in fdxapi.components.yaml
+```
+```
+RecipientRequest:
+# ...
+duration_period:
+type: integer
+description: The maximum consent duration
+in days for duration_type TIME_BOUND for the Data
+Recipient,
+effective from the date of consent
+lookback_period:
+type: integer
+description: The maximum number of days
+allowed for Data Recipient to obtain in transaction
+history,
+effective from the current date
+```
+
+New securitySchemes definitions, RFC 0276
+
+From DRAFT 0276 - Endpoint Authorization per FDX Security Profile using SecuritySchemes
+
+```
+New, shared definition of FAPI Security
+Profile 1.0 Part One – Baseline
+```
+```
+Added to all endpoints in Consent, Event Notifications, Fraud, Meta,
+Recipient Registration and Registry APIs
+```
+```
+Prior FDX API versions did not provide defined
+securitySchemes, this is being added:
+```
+```
+components:
+securitySchemes:
+OAuthFapi1Baseline:
+type: oauth2
+description: >-
+This authorization protocol
+uses FAPI Security Profile 1.0 Part One
+— Baseline.
+To be used with the following
+FDX API domains: Event - Notification
+Subscription, Meta,
+Data Recipient Registration,
+Tax (update endpoints), and FDX
+Participant Registry.
+```
+```
+Client must comply with
+[6.2.2 Client
+provisions](https://openid.net/specs/op
+enid-financial-api- part-1-
+1_0.html#client-provisions).
+Authorization server must
+comply with the
+[5.2.2 Authorization
+server](https://openid.net/specs/openid
+-financial-api- part-1-
+1_0.html#authorization-server).
+```
+```
+This non-customer-specific securityScheme is being added to all non-customer-
+specific FDX APIs, as:
+```
+```
+# additions in
+# fdxapi.consent.yaml
+# fdxapi.event-notifications.yaml
+# fdxapi.fraud.yaml
+# fdxapi.meta.yaml
+# fdxapi.recipient-registration.yaml
+# fdxapi.registry.yaml
+```
+```
+openapi: 3.1.0
+# ...
+```
+```
+security: # <-- file security
+```
+- OAuthFapi1Baseline: [] # <-- below-specified
+securityScheme, has no scopes
+
+```
+components:
+securitySchemes:
+```
+```
+OAuthFapi1Baseline:
+```
+```
+$ref:
+'./fdxapi.components.yaml#/components/securitySchemes/OAuthFapi1B
+aseline'
+```
+
+Client, authorization server
+and resource server requirements
+described in full by:
+* [FAPI Security Profile 1.0
+Part One —
+Baseline](https://openid.net/specs/open
+id- financial-api- part-1-1_0.html)
+* FDX API Security Model
+specification published with the FDX
+API
+flows:
+clientCredentials:
+tokenUrl:
+'https://auth.fi.com/fdx/v6/token'
+
+scopes: {}
+
+
+Restructured Tax API: Explicit TaxStatement level, shared issuer,
+
+recipient entities, RFC 0280
+
+From DRAFT 0280 - US Tax adding support for compound TaxStatements, common issuer and recipient entities
+
+```
+Prior TaxDataList ambiguously combined single form
+with multi-form statements
+```
+```
+Former definition of TaxDataList, with no form or
+statement metadata:
+```
+```
+TaxDataList:
+title: Tax Data List
+description: Paginated array of tax data
+type: object
+allOf:
+```
+- $ref:
+'./fdxapi.components.yaml#/components/schemas/Pa
+ginatedArray'
+- type: object
+properties:
+forms:
+type: array
+description: The list of tax forms
+items:
+
+$ref: '#/components/schemas/TaxData'
+
+```
+Changed to TaxStatement and made explicit whether single- or
+multi-form tax documents
+```
+```
+New TaxStatement entity with full metadata and support for single
+issuer and/or recipient data:
+```
+```
+TaxStatement:
+title: Tax Statement
+description: Tax statement containing one or more
+tax forms
+type: object
+properties:
+taxYear:
+description: Year for which taxes are being
+paid
+$ref: '#/components/schemas/TaxYear'
+taxStatementId:
+description: Long-term persistent id for the
+tax statement.
+Depending upon the data provider, this may be
+the same id as the id on the enclosed tax form(s),
+or this may be a different id
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Identifier'
+issuer:
+description: Issuer's name, address, phone, and
+TIN.
+Issuer data need only be transmittted on
+TaxStatement, 'JSON' data type
+```
+
+responses if it is the same on all included
+tax forms
+$ref: '#/components/schemas/TaxParty'
+recipient:
+description: Recipient's name, address, phone,
+and TIN.
+Recipient data need only be transmittted on
+TaxStatement, 'JSON' data type
+responses if it is the same on all included
+tax forms
+$ref: '#/components/schemas/TaxParty'
+taxDataType:
+description: Whether this `application/json`
+tax form response contains data
+in `forms` property (as 'JSON' format) or
+`pdf` property (as 'BASE64_PDF' format)
+$ref: '#/components/schemas/TaxDataType'
+forms:
+description: The list of data contents for all
+included tax forms,
+response should include one of `forms` or
+`pdf`
+type: array
+items:
+$ref: '#/components/schemas/TaxData'
+pdf:
+description: PDF version of the tax statement
+containing all form pages,
+binary encoded as Base64, response should
+include one of `pdf` or `forms`
+type: string
+format: base64
+attributes:
+description: Additional tax statement
+attributes that the provider wishes to include
+type: array
+items:
+
+
+$ref:
+
+'./fdxapi.components.yaml#/components/schemas/FiAttribute'
+
+
+Former definition of Tax API endpoints, all using
+
+TaxDataList for response and/or request:
+
+/tax-forms:
+get:
+operationId: searchForTaxForms
+# ...
+responses:
+'200':
+description: Array of metadata for all
+the tax document data and
+tax form images available for the
+customer matching search criteria
+content:
+application/json:
+schema:
+$ref:
+'#/components/schemas/TaxDataList'
+post:
+operationId: createTaxForm
+# ...
+description: Submit the data for a
+specific tax document
+requestBody:
+content:
+application/json:
+schema:
+description: The full data
+contents of the tax document and all its
+included forms including the indexing metadata
+values
+$ref:
+'#/components/schemas/TaxDataList'
+responses:
+'201':
+description: Created document for the
+tax data submitted
+content:
+application/json:
+
+```
+New Tax API endpoints use either TaxStatement or
+TaxStatementList for response and/or request:
+```
+```
+/tax-forms:
+# ...
+get:
+operationId: searchForTaxForms
+# ...
+responses:
+'200':
+description: Array of all the tax document data
+and tax form
+images available for the customer matching
+search criteria
+# ...
+content:
+# ...
+application/json:
+schema:
+$ref:
+'#/components/schemas/TaxStatementList'
+# ...
+'206':
+description: Partial Content success searching
+for customer Tax Data forms,
+some errors are being returned
+# ...
+content:
+application/json:
+schema:
+$ref:
+'#/components/schemas/TaxStatementList'
+# ...
+post:
+operationId: createTaxForm
+# ...
+requestBody:
+content:
+application/json:
+```
+
+schema:
+description: The full data
+contents of the tax document and all its
+included forms as ingested
+$ref:
+'#/components/schemas/TaxDataList'
+
+/tax-forms/{taxFormId}:
+get:
+operationId: getTaxForm
+# ...
+responses:
+'200':
+description: >-
+The document image or TaxDataList as
+json for a single tax document
+for the customer. A single document
+can include multiple IRS tax forms
+and/or other reporting statements as
+delivered by providers
+content:
+# ...
+application/json:
+schema:
+description: >-
+The TaxDataList json for a
+single tax document containing
+one or more tax reporting
+forms for the customer
+$ref:
+'#/components/schemas/TaxDataList'
+put:
+operationId: updateTaxForm
+# ...
+requestBody:
+content:
+application/json:
+schema:
+
+```
+schema:
+description: The full data contents of the
+tax document and all its included forms including the
+indexing metadata values
+$ref: '#/components/schemas/TaxStatement'
+responses:
+'201':
+description: Created document for the tax data
+submitted
+# ...
+content:
+application/json:
+schema:
+description: The full data contents of
+the tax document and all its included forms as ingested
+$ref: '#/components/schemas/TaxStatement'
+'206':
+description: Partial Content success creating
+customer tax document, some errors are being returned
+# ...
+content:
+application/json:
+schema:
+description: The data contents of the tax
+document as ingested, with Errors on some included forms
+$ref: '#/components/schemas/TaxStatement'
+# ...
+/tax-forms/{taxFormId}:
+# ...
+get:
+operationId: getTaxForm
+# ...
+responses:
+'200':
+description: >-
+The document image or TaxStatement as json
+for a single tax document
+for the customer. A single document can
+include multiple IRS tax forms
+```
+
+description: The full data
+contents of the document and all its contained
+forms including the indexing metadata values
+$ref:
+'#/components/schemas/TaxDataList'
+# ...
+responses:
+'200':
+description: Ok
+'206':
+description: Partial Content success
+updating customer tax document, some errors are
+being returned
+content:
+application/json:
+schema:
+description: The data contents
+of the tax document as updated, with Errors on
+some included forms
+$ref:
+'#/components/schemas/TaxDataList'
+
+```
+and/or other reporting statements as
+delivered by providers
+# ...
+content:
+# ...
+application/json:
+schema:
+description: >-
+The TaxStatement json for a single tax
+document containing
+one or more tax reporting forms for the
+customer
+$ref: '#/components/schemas/TaxStatement'
+# ...
+'206':
+description: Partial Content success retrieving
+a customer tax document, some errors are being returned
+# ...
+content:
+application/json:
+schema:
+description: >-
+The TaxStatement json for a single tax
+document containing one or more
+tax reporting forms for the customer,
+one or more of which contain an Error
+$ref: '#/components/schemas/TaxStatement'
+# ...
+put:
+operationId: updateTaxForm
+# ...
+requestBody:
+content:
+application/json:
+schema:
+description: The full data contents of the
+document and all its contained forms including the
+indexing metadata values
+$ref: '#/components/schemas/TaxStatement'
+# ...
+```
+
+responses:
+'206':
+description: Partial Content success updating
+customer tax document, some errors are being returned
+# ...
+content:
+application/json:
+schema:
+description: The data contents of the tax
+document as updated, with Errors on some included forms
+$ref: '#/components/schemas/TaxStatement'
+
+
+Prior example of form-specific issuer and recipient entities
+
+for IRS 1099-NEC form:
+
+Tax1099Nec:
+title: Form 1099-NEC
+description: Non-Employee Compensation
+type: object
+allOf:
+
+- $ref: '#/components/schemas/Tax'
+- type: object
+properties:
+payerNameAddress:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Na
+meAddressPhone'
+description: PAYER'S name,
+address, and phone
+payerTin:
+description: PAYER'S TIN
+type: string
+recipientTin:
+description: RECIPIENT'S TIN
+type: string
+recipientNameAddress:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Na
+meAddress'
+description: RECIPIENT'S name and
+address
+accountNumber:
+description: Account number
+type: string
+# ...
+
+Which uses NameAddress and NameAddressPhone from
+
+fdxapi.components.yaml:
+
+NameAddress:
+
+```
+New Tax1099Nec entity which inherits single issuer and recipient from
+Tax entity.
+```
+```
+Especially note new description line on all tax forms including
+Tax1099Nec which describe where to encode former specific form
+properties: here payerNameAddress, payerTin, recipientTin and
+recipientNameAddress get mapped to issuer and recipient
+TaxParty entities.
+```
+```
+Tax:
+# ...
+issuer:
+$ref: '#/components/schemas/TaxParty'
+description: Issuer's name, address, phone, and
+TIN.
+Issuer data need only be transmittted on
+enclosing TaxStatement,
+if it is the same on all its included tax
+forms.
+recipient:
+$ref: '#/components/schemas/TaxParty'
+description: Recipient's name, address, phone,
+and TIN.
+Recipient data need only be transmittted on
+enclosing TaxStatement,
+if it is the same on all its included tax
+forms.
+```
+```
+Tax1099Nec:
+title: Form 1099-NEC
+description: Non-Employee Compensation,
+from PAYER (1st-2nd boxes as issuer) to RECIPIENT
+(3rd-4th boxes)
+type: object
+allOf:
+```
+- $ref: '#/components/schemas/Tax'
+- type: object
+properties:
+
+
+title: Name and Address
+description: Individual or business name
+with address
+type: object
+allOf:
+
+- $ref: '#/components/schemas/Address'
+- type: object
+properties:
+name1:
+$ref:
+'#/components/schemas/String64'
+description: Name line 1
+name2:
+$ref:
+'#/components/schemas/String64'
+description: Name line 2
+
+NameAddressPhone:
+title: Name, Address and Phone
+description: Contact phone number with
+name and address
+type: object
+allOf:
+
+- $ref:
+'#/components/schemas/NameAddress'
+- type: object
+properties:
+phone:
+$ref:
+'#/components/schemas/TelephoneNumberPlusExtensi
+on'
+description: Phone number
+
+```
+accountNumber:
+description: Account number
+type: string
+# ...
+```
+New TaxParty entity used for issuers and recipients:
+
+```
+TaxParty:
+title: Tax Party
+description: Legal entity for issuer or recipient,
+used across all tax forms
+type: object
+properties:
+tin:
+description: Issuer or recipient Tax
+Identification Number.
+Usually EIN for issuer and SSN for recipient
+type: string
+partyType:
+$ref: '#/components/schemas/TaxPartyType'
+description: Type of issuer or recipient legal
+entity, as "BUSINESS" or "INDIVIDUAL".
+Commonly BUSINESS for issuer and INDIVIDUAL
+for recipient
+individualName:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/IndividualN
+ame'
+description: Individual issuer or recipient
+name
+businessName:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/BusinessNam
+e'
+description: Business issuer or recipient name
+address:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/Address'
+description: Issuer or recipient address
+```
+
+```
+phone:
+$ref:
+'./fdxapi.components.yaml#/components/schemas/TelephoneNu
+mberPlusExtension'
+description: Issuer or recipient telephone
+number
+email:
+description: Issuer or recipient email address.
+(Additional information, not part of IRS
+forms)
+type: string
+```
+Removed format: double from all (~423) instances of
+
+monetary amount fields in Tax API. This could impact code
+
+generation tooling, for example openapi-generator uses
+
+type Double for format: double properties and type
+
+BigDecimal for `type: number” properties without a format
+
+specified. Example of a prior definition:
+
+federalTaxWithheld:
+description: Box 4, Federal income tax
+withheld
+format: double
+type: number
+
+New definition of amount types without format: double:
+
+```
+federalTaxWithheld:
+description: Box 4, Federal income tax withheld
+type: number
+```
+
+Existing LocalTaxWithholding and
+
+StateTaxWithholding (abbreviated)
+
+StateTaxWithholding:
+title: State Tax Withholding
+description: Income in a state and its tax
+withholding
+type: object
+properties:
+stateTaxWithheld:
+description: Amount of state income
+tax withheld
+format: double
+type: number
+state:
+description: State two-digit code
+type: string
+stateTaxId:
+description: Tax id of company
+withholding state income tax
+type: string
+stateIncome:
+description: Income amount for state
+tax purposes
+format: double
+type: number
+
+LocalTaxWithholding:
+title: Local Tax Withholding
+description: Income in a locality and its
+tax withholding
+type: object
+properties:
+localTaxWithheld:
+description: Amount of local income
+tax withheld
+format: double
+type: number
+localityName:
+
+```
+Consolidated inside new StateAndLocalTaxWithholding per lessons
+learned and IRS IRIS schemas:
+```
+```
+StateAndLocalTaxWithholding:
+title: State and Local Tax Withholding
+description: Income in a state and its tax
+withholding
+type: object
+properties:
+stateCode:
+description: State two-digit code
+$ref: '#/components/schemas/StateCode'
+state:
+description: Amount of state income tax
+withheld
+$ref:
+'#/components/schemas/StateTaxWithholding'
+local:
+description: Amount of local income tax
+withheld
+$ref:
+'#/components/schemas/LocalTaxWithholding'
+```
+```
+StateTaxWithholding:
+title: State Tax Withholding
+description: Income in a state and its tax
+withholding
+type: object
+properties:
+taxWithheld:
+description: Amount of state income tax
+withheld
+format: double
+type: number
+taxId:
+description: Filer's state tax id number
+type: string
+income:
+```
+
+description: Locality name
+type: string
+state:
+description: State code of state in
+which locality exists
+type: string
+localIncome:
+description: Income amount for local
+tax purposes
+format: double
+type: number
+
+# prior example data structures:
+stateTaxWithholding:
+
+- stateTaxWithheld:
+15023.0
+state: NY
+stateTaxId: 14-
+000023
+localTaxWithholding:
+- localTaxWithheld:
+17022.0
+localityName: New
+York City
+state: NY
+
+```
+description: Income amount for state tax
+purposes
+format: double
+type: number
+```
+```
+LocalTaxWithholding:
+title: Local Tax Withholding
+description: Income in a locality and its tax
+withholding
+type: object
+properties:
+taxWithheld:
+description: Amount of local income tax
+withheld
+format: double
+type: number
+localityName:
+description: Locality name
+type: string
+income:
+description: Income amount for local tax
+purposes
+format: double
+type: number
+```
+```
+# Changes on all these tax forms:
+# 1099-B, SecurityDetail (1099-B), 1099-DIV, 1099-G,
+1099-Int, 1099-K,
+# 1099-MISC, 1099-NEC, 1099-OID, 1099-R, W-2, and
+1042-S.
+# Add new to 1099-PATR and W-2G forms.
+# Modify this property:
+stateTaxWithholding:
+description: Boxes 12-14, State tax
+withholding
+type: array
+items:
+$ref:
+'#/components/schemas/StateTaxWithholding'
+# Remove this property, where it exists:
+```
+
+localTaxWithholding:
+description: Boxes 15-17, Local tax
+withholding
+type: array
+items:
+$ref:
+'#/components/schemas/LocalTaxWithholding'
+
+# So tax form changes become:
+stateAndLocal:
+description: Boxes 12-17, State and Local
+tax withholding
+type: array
+items:
+$ref:
+'#/components/schemas/StateAndLocalTaxWithholding'
+
+# With new example:
+stateAndLocal:
+
+- stateCode: NY
+state:
+taxWithheld: 15023.0
+taxId: 14- 000023
+local:
+taxWithheld: 17022.0
+localityName: New York
+City
+
+
