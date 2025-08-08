@@ -30,4 +30,4 @@ toc:
   - page: Changelog
     file: changelog
   - page: Migration Guide
-    file: v6.0-api-migration-guide
+    file: v6.0.2-api-migration-guide
