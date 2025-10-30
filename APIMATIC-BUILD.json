@@ -11,19 +11,50 @@
     },
     "languageConfig": {
       "http": {},
-      "csharp": {},
+      "csharp": {
+        "packageRepository": "NuGet",
+        "packageSettings": {
+          "PackageName": "FdxApiSDK-csharp",
+          "Version": "1.0.0"
+        }
+      },
       "java": {},
-      "php": {},
-      "python": {},
-      "ruby": {},
-      "typescript": {},
+      "php": {
+        "packageRepository": "Packagist",
+        "packageSettings": {
+          "PackageName": "fdx-api-sdk-php",
+          "VendorName": "fdx",
+          "Version": "1.0.0"
+        }
+      },
+      "python": {
+        "packageRepository": "PyPI",
+        "packageSettings": {
+          "PackageName": "fdx-api-sdk-python",
+          "Version": "1.0.0"
+        }
+      },
+      "ruby": {
+        "packageRepository": "RubyGems",
+        "packageSettings": {
+          "PackageName": "fdx-api-sdk-ruby",
+          "Version": "1.0.0"
+        }
+      },
+      "typescript": {
+        "packageRepository": "Npm",
+        "packageSettings": {
+          "PackageName": "fdx-api-sdk-ts",
+          "Version": "1.0.0"
+        }
+      },
       "go": {}
     },
     "portalSettings": {
       "container": "apimatic-widget",
       "portalStyle": "default",
       "apiKey": "xxx",
-      "baseUrl": "./",
+      "baseUrl": "https://fdx-poc-apimatic.pages.dev",
       "enableExport": true,
       "enableAnalytics": true,
       "enableConsoleCalls": true,
@@ -35,7 +66,12 @@
         },
         "cs_net_standard_lib": {
           "sdkDownloadLink": "",
-          "disableSdkDownload": false
+          "disableSdkDownload": false,
+          "aiIntegration": {
+            "cursor": {
+              "isEnabled": true
+            }
+          }
         },
         "java_eclipse_jre_lib": {
           "sdkDownloadLink": "",
@@ -43,19 +79,39 @@
         },
         "php_generic_lib_v2": {
           "sdkDownloadLink": "",
-          "disableSdkDownload": false
+          "disableSdkDownload": false,
+          "aiIntegration": {
+            "cursor": {
+              "isEnabled": true
+            }
+          }
         },
         "python_generic_lib": {
           "sdkDownloadLink": "",
-          "disableSdkDownload": false
+          "disableSdkDownload": false,
+          "aiIntegration": {
+            "cursor": {
+              "isEnabled": true
+            }
+          }
         },
         "ruby_generic_lib": {
           "sdkDownloadLink": "",
-          "disableSdkDownload": false
+          "disableSdkDownload": false,
+          "aiIntegration": {
+            "cursor": {
+              "isEnabled": true
+            }
+          }
         },
         "ts_generic_lib": {
           "sdkDownloadLink": "",
-          "disableSdkDownload": false
+          "disableSdkDownload": false,
+          "aiIntegration": {
+            "cursor": {
+              "isEnabled": true
+            }
+          }
         },
         "go_generic_lib": {
           "sdkDownloadLink": "",
